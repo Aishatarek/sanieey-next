@@ -6,11 +6,10 @@ import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import { FreeMode } from "swiper/modules";
 
-
 export default function Reviews() {
-  const swiperRef = useRef(null);
+  const swiperRef = useRef<any>(null);
 
-  const handleSlideClick = (index) => {
+  const handleSlideClick = (index: number) => {  // تحديد نوع الـ index
     if (swiperRef.current) {
       swiperRef.current.swiper.slideTo(index);
     }
@@ -26,12 +25,11 @@ export default function Reviews() {
         loop={true}
         centeredSlides={true}
         centeredSlidesBounds={true}
- 
         modules={[FreeMode]}
         className="mySwiper reviewsSec mt-7"
         breakpoints={{
           0: { slidesPerView: 3 },
-          768: { slidesPerView: 5 }, 
+          768: { slidesPerView: 5 },
         }}
       >
         {[...Array(5)].map((_, index) => (
