@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,7 +31,7 @@ function Navbar() {
       <div className="container mx-auto flex items-center justify-between p-4">
         {/* Logo */}
         <Link href="/">
-          <Image src="/images/Frame 16.svg" width={100} height={100} alt="Logo" className="h-10" />
+          <img src="/images/Frame 16.svg" alt="Logo" className="h-10" />
         </Link>
 
         {/* Desktop Menu */}
