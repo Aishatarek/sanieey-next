@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image';
 
 const page = () => {
     return (
@@ -91,11 +92,11 @@ const page = () => {
                     <span>الــتقــييم</span>
                 </div>
                 <div className="riting">
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Star.svg" />
-                    <img src="/images/Star.svg" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt=""/>
+                    <img src="/images/Starf.svg" alt=""/>
+                    <img src="/images/Star.svg" alt=""/>
+                    <img src="/images/Star.svg" alt=""/>
                 </div>
             </div>
             <div className="more-det"><a href="#">عرض التفاصيل</a></div>
@@ -124,11 +125,11 @@ const page = () => {
                     <span>الــتقــييم</span>
                 </div>
                 <div className="riting">
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Star.svg" />
-                    <img src="/images/Star.svg" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
             <div className="more-det"><a href="#">عرض التفاصيل</a></div>
@@ -157,11 +158,11 @@ const page = () => {
                     <span>الــتقــييم</span>
                 </div>
                 <div className="riting">
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Star.svg" />
-                    <img src="/images/Star.svg" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
             <div className="more-det"><a href="#">عرض التفاصيل</a></div>
@@ -189,11 +190,11 @@ const page = () => {
                     <span>الــتقــييم</span>
                 </div>
                 <div className="riting">
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Star.svg" />
-                    <img src="/images/Star.svg" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
             <div className="more-det"><a href="#">عرض التفاصيل</a></div>
@@ -221,11 +222,11 @@ const page = () => {
                     <span>الــتقــييم</span>
                 </div>
                 <div className="riting">
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Star.svg" />
-                    <img src="/images/Star.svg" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
             <div className="more-det"><a href="#">عرض التفاصيل</a></div>
@@ -253,11 +254,11 @@ const page = () => {
                     <span>الــتقــييم</span>
                 </div>
                 <div className="riting">
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Star.svg" />
-                    <img src="/images/Star.svg" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
             <div className="more-det"><a href="#">عرض التفاصيل</a></div>
@@ -285,11 +286,11 @@ const page = () => {
                     <span>الــتقــييم</span>
                 </div>
                 <div className="riting">
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Star.svg" />
-                    <img src="/images/Star.svg" />
+                    <img src="/images/Starf.svg"  alt="" />
+                    <img src="/images/Starf.svg"  alt="" />
+                    <img src="/images/Starf.svg"  alt="" />
+                    <img src="/images/Star.svg"  alt="" />
+                    <img src="/images/Star.svg"  alt="" />
                 </div>
             </div>
             <div className="more-det"><a href="#">عرض التفاصيل</a></div>
@@ -317,11 +318,11 @@ const page = () => {
                     <span>الــتقــييم</span>
                 </div>
                 <div className="riting">
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Starf.svg" />
-                    <img src="/images/Star.svg" />
-                    <img src="/images/Star.svg" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Starf.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
+                    <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
             <div className="more-det"><a href="#">عرض التفاصيل</a></div>

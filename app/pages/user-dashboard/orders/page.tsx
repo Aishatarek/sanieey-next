@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Image from 'next/image';
 import PhoneInput from 'react-phone-input-2'
 import "react-phone-input-2/lib/style.css";
 
@@ -14,7 +15,7 @@ const page = () => {
                 <div className="w-full  md:w-3/12">
                     <div className='personal-container'>
                         <div className='personal-main'>
-                            <img src="/images/Ellipse 14.svg" alt="" />
+                            <img src="/images/Ellipse 6.svg" alt="" />
                             <div>
                                 <h5>
                                     ربيع احمد
@@ -54,7 +55,8 @@ const page = () => {
                             <div  className='order-content mt-5'>
                             <p>الخدمة المطلوبة:</p>
                             <div>
-                                <p>"محتاج صنايعي كهربائي شاطر يعمل شغل الكهربا في البيت كله، من تأسيس الأسلاك لتركيب المفاتيح والبرايز واللوحة، ويكون شغله نظيف وفي الميعاد."</p>
+                                 <p>&ldquo; محتاج صنايعي كهربائي شاطر يعمل شغل الكهربا في البيت كله، من تأسيس الأسلاك لتركيب المفاتيح والبرايز واللوحة، ويكون شغله نظيف وفي الميعاد.&ldquo;</p>
+
                             </div>
                         </div>
                         <div className="flex justify-around flex-wrap">
@@ -93,7 +95,8 @@ const page = () => {
                             <div  className='order-content mt-5'>
                             <p>الخدمة المطلوبة:</p>
                             <div>
-                                <p>"محتاج صنايعي كهربائي شاطر يعمل شغل الكهربا في البيت كله، من تأسيس الأسلاك لتركيب المفاتيح والبرايز واللوحة، ويكون شغله نظيف وفي الميعاد."</p>
+                                 <p>&ldquo; محتاج صنايعي كهربائي شاطر يعمل شغل الكهربا في البيت كله، من تأسيس الأسلاك لتركيب المفاتيح والبرايز واللوحة، ويكون شغله نظيف وفي الميعاد.&ldquo;</p>
+
                             </div>
                         </div>
                         <div className="flex justify-around flex-wrap">
@@ -130,7 +133,8 @@ const page = () => {
                             <div  className='order-content mt-5'>
                             <p>الخدمة المطلوبة:</p>
                             <div>
-                                <p>"محتاج صنايعي كهربائي شاطر يعمل شغل الكهربا في البيت كله، من تأسيس الأسلاك لتركيب المفاتيح والبرايز واللوحة، ويكون شغله نظيف وفي الميعاد."</p>
+                                 <p>&ldquo; محتاج صنايعي كهربائي شاطر يعمل شغل الكهربا في البيت كله، من تأسيس الأسلاك لتركيب المفاتيح والبرايز واللوحة، ويكون شغله نظيف وفي الميعاد.&ldquo;</p>
+
                             </div>
                         </div>
                         <div className="flex justify-around flex-wrap">

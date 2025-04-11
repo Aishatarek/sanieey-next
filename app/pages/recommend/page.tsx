@@ -1,4 +1,5 @@
 import React from 'react'
+import Image from 'next/image';
 
 const page = () => {
     return (
@@ -129,7 +130,7 @@ const page = () => {
                     </div>
                 </section>
                 <div className="btn-sendd my-5">
-                    <button><img src="/images/ArrowLeft.svg" /><span>إرســــــال</span>  </button>
+                    <button><img src="/images/ArrowLeft.svg" alt="" /><span>إرســــــال</span>  </button>
 
                 </div>
 

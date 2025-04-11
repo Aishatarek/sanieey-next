@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Image from 'next/image';
 import PhoneInput from 'react-phone-input-2'
 import "react-phone-input-2/lib/style.css";
 
@@ -70,7 +71,7 @@ const page = () => {
                             <form>
                                 <div className='edit-image'>
                                     <label htmlFor='image-file'>
-                                        <img src="/images/Ellipse 14.svg" alt="" className='personal-image' />
+                                        <img src="/images/Ellipse 6.svg" alt="" className='personal-image' />
                                         <img src="/images/Frame 331.svg" alt="" className='change-image' />
 
                                     </label>

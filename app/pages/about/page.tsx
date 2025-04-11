@@ -1,11 +1,12 @@
 import React from 'react'
+import Image from 'next/image';
 
 const page = () => {
     return (
         <>
             <div className="aboutus">
-            <div className="nam"><span>مـــن نــحــــن؟ </span> <img src="/images/Fill 177.svg" alt="" />
-</div>
+                <div className="nam"><span>مـــن نــحــــن؟ </span> <img src="/images/Fill 177.svg" alt="" />
+                </div>
 
 
                 <div className="aboutus-group">

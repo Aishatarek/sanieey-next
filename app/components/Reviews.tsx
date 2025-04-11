@@ -5,6 +5,7 @@ import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import { FreeMode, Navigation } from "swiper/modules";
+import Image from "next/image";
 
 export default function Reviews() {
   const swiperRef = useRef(null);
@@ -39,11 +40,11 @@ export default function Reviews() {
             <div className="review-div">
               <h3>طارق سليمان</h3>
               <div className="riting">
-                <img src="/images/Starf.svg" />
-                <img src="/images/Starf.svg" />
-                <img src="/images/Starf.svg" />
-                <img src="/images/Star.svg" />
-                <img src="/images/Star.svg" />
+                <img src="/images/Starf.svg" alt="" />
+                <img src="/images/Starf.svg" alt="" />
+                <img src="/images/Starf.svg" alt="" />
+                <img src="/images/Star.svg" alt="" />
+                <img src="/images/Star.svg" alt="" />
               </div>
               <div className="text-box">
                 خدمة ممتازة وساعدتني في الحصول على متابعين في أسرع وقت وكانت ميزة التقييمات مفيدة جدًا.
