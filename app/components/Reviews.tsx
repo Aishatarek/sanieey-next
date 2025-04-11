@@ -7,18 +7,18 @@ import "swiper/css/navigation";
 import { FreeMode } from "swiper/modules";
 
 export default function Reviews() {
-  const swiperRef = useRef<any>(null);
+//   const swiperRef = useRef<any>(null);
 
-  const handleSlideClick = (index: number) => {  // تحديد نوع الـ index
-    if (swiperRef.current) {
-      swiperRef.current.swiper.slideTo(index);
-    }
-  };
+//   const handleSlideClick = (index: number) => {  // تحديد نوع الـ index
+//     if (swiperRef.current) {
+//       swiperRef.current.swiper.slideTo(index);
+//     }
+//   };
 
   return (
     <>
       <Swiper
-        ref={swiperRef}
+        // ref={swiperRef}
         slidesPerView={5}
         spaceBetween={20}
         freeMode={true}
@@ -33,7 +33,9 @@ export default function Reviews() {
         }}
       >
         {[...Array(5)].map((_, index) => (
-          <SwiperSlide key={index} onClick={() => handleSlideClick(index)}>
+          <SwiperSlide key={index}
+        //    onClick={() => handleSlideClick(index)}
+           >
             <img src="/images/Ellipse 9.jpg" alt="User" />
             <div className="review-div">
               <h3>طارق سليمان</h3>
