@@ -80,18 +80,18 @@ const page = () => {
                     <div className="con-5">
                         <div className="collapse collapse-plus bg-base-100 border border-base-300">
                             <input type="radio" name="my-accordion-3" defaultChecked />
-                            <div className="collapse-title font-semibold">مــا هــو مــوقـع “صنــايـعي بلس” ومــا الــهــدف مــنه؟</div>
+                            <div className="collapse-title font-semibold">مــا هــو مــوقـع &quot;صنــايـعي بلس&quot; ومــا الــهــدف مــنه؟</div>
                             <div className="collapse-content text-sm">موقع صنايعي بلس يوفر لك الصنايعي المناسب لاحتياجاتك بناءاً على تقييمات موثوقة وقاعدة بيانات كبيرة تشمل جميع التخصصات لتسهيل عملية الاختيار بدلاً من الانتظار للحصول على توصيات مباشرة.</div>
                         </div>
                         <div className="collapse collapse-plus bg-base-100 border border-base-300">
-                            <input type="radio" name="my-accordion-3" />
-                            <div className="collapse-title font-semibold">لم أجد المهنة أو التخصص الذي أبحث عنه، ماذا أفعل؟</div>
-                            <div className="collapse-content text-sm">Click on "Forgot Password" on the login page and follow the instructions sent to your email.</div>
+                            <input type="radio" name="my-accordion-3" defaultChecked />
+                            <div className="collapse-title font-semibold">مــا هــو مــوقـع &quot;صنــايـعي بلس&quot; ومــا الــهــدف مــنه؟</div>
+                            <div className="collapse-content text-sm">موقع صنايعي بلس يوفر لك الصنايعي المناسب لاحتياجاتك بناءاً على تقييمات موثوقة وقاعدة بيانات كبيرة تشمل جميع التخصصات لتسهيل عملية الاختيار بدلاً من الانتظار للحصول على توصيات مباشرة.</div>
                         </div>
                         <div className="collapse collapse-plus bg-base-100 border border-base-300">
-                            <input type="radio" name="my-accordion-3" />
-                            <div className="collapse-title font-semibold">نسيت كلمة المرور، ماذا أفعل؟</div>
-                            <div className="collapse-content text-sm">Go to "My Account" settings and select "Edit Profile" to make changes.</div>
+                            <input type="radio" name="my-accordion-3" defaultChecked />
+                            <div className="collapse-title font-semibold">مــا هــو مــوقـع &quot;صنــايـعي بلس&quot; ومــا الــهــدف مــنه؟</div>
+                            <div className="collapse-content text-sm">موقع صنايعي بلس يوفر لك الصنايعي المناسب لاحتياجاتك بناءاً على تقييمات موثوقة وقاعدة بيانات كبيرة تشمل جميع التخصصات لتسهيل عملية الاختيار بدلاً من الانتظار للحصول على توصيات مباشرة.</div>
                         </div>
 
 
