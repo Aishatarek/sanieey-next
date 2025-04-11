@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Link from 'next/link';
 
 
 const page = () => {
@@ -25,10 +26,10 @@ const page = () => {
                         </div>
                         <div>
                             <ul className="personal-menu">
-                                <li><a href="/user-dashboard/personal-data"   className='active'> <img src="/images/profile-circle.svg" alt="" /><span> البيانات الشخصية </span></a></li>
-                                <li><a href="/user-dashboard/orders">  <img src="/images/calendar-tick.svg" alt="" /><span> الطـلـبـات </span></a></li>
-                                <li><a href="/user-dashboard/reviews"> <img src="/images/archive-minus.svg" alt="" /><span> التقــيـيـمات  </span></a></li>
-                                <li><a href="/user-dashboard/recommend"> <img src="/images/Group 8.svg" alt="" /><span> الصنايعية المرشحين </span> </a></li>
+                                <li><Link href="/user-dashboard/personal-data"   className='active'> <img src="/images/profile-circle.svg" alt="" /><span> البيانات الشخصية </span></Link></li>
+                                <li><Link href="/user-dashboard/orders">  <img src="/images/calendar-tick.svg" alt="" /><span> الطـلـبـات </span></Link></li>
+                                <li><Link href="/user-dashboard/reviews"> <img src="/images/archive-minus.svg" alt="" /><span> التقــيـيـمات  </span></Link></li>
+                                <li><Link href="/user-dashboard/recommend"> <img src="/images/Group 8.svg" alt="" /><span> الصنايعية المرشحين </span> </Link></li>
                             </ul>
                         </div>
                     </div>

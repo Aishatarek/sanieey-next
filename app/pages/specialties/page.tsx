@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link';
 
 const specialties = () => {
   return (
@@ -73,7 +74,7 @@ const specialties = () => {
             <img src="/images/Fill 178.svg" alt="" />
             
              <span>أرسل إلينا الآن وسنقوم بإضافتها على الفور!</span> </div>
-            <div className="btn-more"> <a href="#"> تـــواصــل مــعــنـا</a></div>
+            <div className="btn-more"> <Link href="#"> تـــواصــل مــعــنـا</Link></div>
 
           </div>
           <div className="m8">

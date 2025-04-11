@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Link from 'next/link';
 
 
 const page = () => {
@@ -25,10 +26,10 @@ const page = () => {
                         </div>
                         <div>
                             <ul className="personal-menu">
-                                <li><a href="/user-dashboard/personal-data"> <img src="/images/profile-circle.svg" alt="" /><span> البيانات الشخصية </span></a></li>
-                                <li><a href="/user-dashboard/orders">  <img src="/images/calendar-tick.svg" alt="" /><span> الطـلـبـات </span></a></li>
-                                <li><a href="/user-dashboard/reviews" className='active'> <img src="/images/archive-minus.svg" alt="" /><span> التقــيـيـمات  </span></a></li>
-                                <li><a href="/user-dashboard/recommend"> <img src="/images/Group 8.svg" alt="" /><span> الصنايعية المرشحين </span> </a></li>
+                                <li><Link href="/user-dashboard/personal-data"> <img src="/images/profile-circle.svg" alt="" /><span> البيانات الشخصية </span></Link></li>
+                                <li><Link href="/user-dashboard/orders">  <img src="/images/calendar-tick.svg" alt="" /><span> الطـلـبـات </span></Link></li>
+                                <li><Link href="/user-dashboard/reviews" className='active'> <img src="/images/archive-minus.svg" alt="" /><span> التقــيـيـمات  </span></Link></li>
+                                <li><Link href="/user-dashboard/recommend"> <img src="/images/Group 8.svg" alt="" /><span> الصنايعية المرشحين </span> </Link></li>
                             </ul>
                         </div>
                     </div>
@@ -67,7 +68,7 @@ const page = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <p className="com-1-3">"تجربة ممتازة ومريحة جدًا! الخدمة منظمة وسهلة الاستخدام، وقد استطعت العثور على الصنايعي المناسب بسرعة. الحرفيين المدرجين في الموقع يتمتعون بالاحترافية، وكان التواصل معهم سلسًا، بالإضافة إلى الالتزام بالمواعيد والجودة العالية في العمل. بالتأكيد أنصح باستخدام هذا الموقع لأي شخص يبحث عن خدمة موثوقة في وقت قصير. شكرًا على التجربة الرائعة!"</p>
+                                    <p className="com-1-3">&quot;تجربة ممتازة ومريحة جدًا! الخدمة منظمة وسهلة الاستخدام، وقد استطعت العثور على الصنايعي المناسب بسرعة. الحرفيين المدرجين في الموقع يتمتعون بالاحترافية، وكان التواصل معهم سلسًا، بالإضافة إلى الالتزام بالمواعيد والجودة العالية في العمل. بالتأكيد أنصح باستخدام هذا الموقع لأي شخص يبحث عن خدمة موثوقة في وقت قصير. شكرًا على التجربة الرائعة!&quot;</p>
                                 </div>
 
                             </div>
@@ -100,7 +101,7 @@ const page = () => {
                                     </div>
                                 </div>
                                 <div>
-                                    <p className="com-1-3">"تجربة ممتازة ومريحة جدًا! الخدمة منظمة وسهلة الاستخدام، وقد استطعت العثور على الصنايعي المناسب بسرعة. الحرفيين المدرجين في الموقع يتمتعون بالاحترافية، وكان التواصل معهم سلسًا، بالإضافة إلى الالتزام بالمواعيد والجودة العالية في العمل. بالتأكيد أنصح باستخدام هذا الموقع لأي شخص يبحث عن خدمة موثوقة في وقت قصير. شكرًا على التجربة الرائعة!"</p>
+                                    <p className="com-1-3">&quot;تجربة ممتازة ومريحة جدًا! الخدمة منظمة وسهلة الاستخدام، وقد استطعت العثور على الصنايعي المناسب بسرعة. الحرفيين المدرجين في الموقع يتمتعون بالاحترافية، وكان التواصل معهم سلسًا، بالإضافة إلى الالتزام بالمواعيد والجودة العالية في العمل. بالتأكيد أنصح باستخدام هذا الموقع لأي شخص يبحث عن خدمة موثوقة في وقت قصير. شكرًا على التجربة الرائعة!&quot;</p>
                                 </div>
 
                             </div>

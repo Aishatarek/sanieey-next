@@ -36,17 +36,17 @@ function Navbar() {
 
         {/* Desktop Menu */}
         <ul className="hidden lg:flex space-x-6 text-gray-700 font-medium">
-          <li><a href="/" className="hover:text-orange-500">الرئيسية</a></li>
-          <li><a href="/specialties" className="hover:text-orange-500">اكتشف التخصصات</a></li>
-          <li><a href="/industrial-list" className="hover:text-orange-500">قائمة الصنايعية</a></li>
-          <li><a href="/recommend" className="hover:text-orange-500">رشّح صنايعي</a></li>
-          <li><a href="/contactus" className="hover:text-orange-500">تواصل معنا</a></li>
-          <li><a href="/about" className="hover:text-orange-500">من نحن؟</a></li>
+          <li><Link href="/" className="hover:text-orange-500">الرئيسية</Link></li>
+          <li><Link href="/specialties" className="hover:text-orange-500">اكتشف التخصصات</Link></li>
+          <li><Link href="/industrial-list" className="hover:text-orange-500">قائمة الصنايعية</Link></li>
+          <li><Link href="/recommend" className="hover:text-orange-500">رشّح صنايعي</Link></li>
+          <li><Link href="/contactus" className="hover:text-orange-500">تواصل معنا</Link></li>
+          <li><Link href="/about" className="hover:text-orange-500">من نحن؟</Link></li>
         </ul>
 
         {/* Buttons */}
         <div className="hidden lg:flex space-x-3">
-          <a className="btn sanieey-sign-btn" href='/sanieey-sign'>
+          <Link className="btn sanieey-sign-btn" href='/sanieey-sign'>
 
             <svg
               xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -60,8 +60,8 @@ function Navbar() {
                 d="M19.1157 12.9097C18.7017 12.9097 18.3657 12.5737 18.3657 12.1597V10.9048H17.0728C16.6588 10.9048 16.3228 10.5688 16.3228 10.1548C16.3228 9.74079 16.6588 9.40479 17.0728 9.40479H18.3657V8.14966C18.3657 7.73566 18.7017 7.39966 19.1157 7.39966C19.5297 7.39966 19.8657 7.73566 19.8657 8.14966V9.40479H21.1628C21.5768 9.40479 21.9128 9.74079 21.9128 10.1548C21.9128 10.5688 21.5768 10.9048 21.1628 10.9048H19.8657V12.1597C19.8657 12.5737 19.5297 12.9097 19.1157 12.9097Z"
                 fill="#ED5B28" />
             </svg>
-            سجل كصنايعي</a>
-          <a className="btn sign-btn" href='/sign'>
+            سجل كصنايعي</Link>
+            <Link className="btn sign-btn" href='/sign'>
             <svg
               xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
               <path d="M12.791 10.1208H0.75" stroke="white" strokeWidth="1.5" strokeLinecap="round"
@@ -71,7 +71,7 @@ function Navbar() {
               <path
                 d="M5.25977 5.63C5.58977 2.05 6.92977 0.75 12.2598 0.75C19.3608 0.75 19.3608 3.06 19.3608 10C19.3608 16.94 19.3608 19.25 12.2598 19.25C6.92977 19.25 5.58977 17.95 5.25977 14.37"
                 stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />      </svg>
-            تسجيل دخول </a>
+            تسجيل دخول </Link>
         </div>
 
         {/* Mobile Menu Button */}
@@ -84,15 +84,15 @@ function Navbar() {
       {menuOpen && (
         <div className="lg:hidden bg-white border-t p-4">
           <ul className="flex flex-col space-y-3 text-gray-700 font-medium">
-            <li><a href="/" className="hover:text-orange-500">الرئيسية</a></li>
-            <li><a href="/specialties" className="hover:text-orange-500">اكتشف التخصصات</a></li>
-            <li><a href="/industrial-list" className="hover:text-orange-500">قائمة الصنايعية</a></li>
-            <li><a href="/recommend" className="hover:text-orange-500">رشّح صنايعي</a></li>
-            <li><a href="/contactus" className="hover:text-orange-500">تواصل معنا</a></li>
-            <li><a href="/about" className="hover:text-orange-500">من نحن؟</a></li>
+            <li><Link href="/" className="hover:text-orange-500">الرئيسية</Link></li>
+            <li><Link href="/specialties" className="hover:text-orange-500">اكتشف التخصصات</Link></li>
+            <li><Link href="/industrial-list" className="hover:text-orange-500">قائمة الصنايعية</Link></li>
+            <li><Link href="/recommend" className="hover:text-orange-500">رشّح صنايعي</Link></li>
+            <li><Link href="/contactus" className="hover:text-orange-500">تواصل معنا</Link></li>
+            <li><Link href="/about" className="hover:text-orange-500">من نحن؟</Link></li>
           </ul>
           <div className="mt-4 flex flex-col space-y-2">
-            <a className="btn sanieey-sign-btn" href='/sanieey-sign'>
+          <Link className="btn sanieey-sign-btn" href='/sanieey-sign'>
 
               <svg
                 xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -106,8 +106,8 @@ function Navbar() {
                   d="M19.1157 12.9097C18.7017 12.9097 18.3657 12.5737 18.3657 12.1597V10.9048H17.0728C16.6588 10.9048 16.3228 10.5688 16.3228 10.1548C16.3228 9.74079 16.6588 9.40479 17.0728 9.40479H18.3657V8.14966C18.3657 7.73566 18.7017 7.39966 19.1157 7.39966C19.5297 7.39966 19.8657 7.73566 19.8657 8.14966V9.40479H21.1628C21.5768 9.40479 21.9128 9.74079 21.9128 10.1548C21.9128 10.5688 21.5768 10.9048 21.1628 10.9048H19.8657V12.1597C19.8657 12.5737 19.5297 12.9097 19.1157 12.9097Z"
                   fill="#ED5B28" />
               </svg>
-              سجل كصنايعي</a>
-            <a className="btn sign-btn" href='/sign'>
+              سجل كصنايعي</Link>
+              <Link className="btn sign-btn" href='/sign'>
               <svg
                 xmlns="http://www.w3.org/2000/svg" width="21" height="20" viewBox="0 0 21 20" fill="none">
                 <path d="M12.791 10.1208H0.75" stroke="white" strokeWidth="1.5" strokeLinecap="round"
@@ -117,7 +117,7 @@ function Navbar() {
                 <path
                   d="M5.25977 5.63C5.58977 2.05 6.92977 0.75 12.2598 0.75C19.3608 0.75 19.3608 3.06 19.3608 10C19.3608 16.94 19.3608 19.25 12.2598 19.25C6.92977 19.25 5.58977 17.95 5.25977 14.37"
                   stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />      </svg>
-              تسجيل دخول </a>
+              تسجيل دخول </Link>
           </div>
         </div>
       )}

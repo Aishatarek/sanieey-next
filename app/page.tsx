@@ -1,5 +1,6 @@
 import React from 'react'
 import Reviews from "./components/Reviews";
+import Link from 'next/link';
 
 
 
@@ -212,7 +213,7 @@ export default function Home() {
                     <img src="/images/Star.svg" alt="" />
                   </div>
                 </div>
-                <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+                <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
               </div>
             </div>
@@ -245,7 +246,7 @@ export default function Home() {
                     <img src="/images/Star.svg" alt="" />
                   </div>
                 </div>
-                <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+                <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
               </div>
             </div>
@@ -278,7 +279,7 @@ export default function Home() {
                     <img src="/images/Star.svg" alt="" />
                   </div>
                 </div>
-                <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+                <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
               </div>
             </div>
@@ -311,7 +312,7 @@ export default function Home() {
                     <img src="/images/Star.svg" alt="" />
                   </div>
                 </div>
-                <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+                <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
               </div>
             </div>

@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link';
 
 
 const page = () => {
@@ -99,7 +100,7 @@ const page = () => {
                     <img src="/images/Star.svg" alt=""/>
                 </div>
             </div>
-            <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
         </div>
     </div>
@@ -132,7 +133,7 @@ const page = () => {
                     <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
-            <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
         </div>
     </div>
@@ -165,7 +166,7 @@ const page = () => {
                     <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
-            <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
         </div>
     </div>
@@ -197,7 +198,7 @@ const page = () => {
                     <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
-            <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
         </div>
     </div>
@@ -229,7 +230,7 @@ const page = () => {
                     <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
-            <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
         </div>
     </div>
@@ -261,7 +262,7 @@ const page = () => {
                     <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
-            <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
         </div>
     </div>
@@ -293,7 +294,7 @@ const page = () => {
                     <img src="/images/Star.svg"  alt="" />
                 </div>
             </div>
-            <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
         </div>
     </div>
@@ -325,7 +326,7 @@ const page = () => {
                     <img src="/images/Star.svg" alt="" />
                 </div>
             </div>
-            <div className="more-det"><a href="#">عرض التفاصيل</a></div>
+            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
 
         </div>
     </div>

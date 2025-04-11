@@ -1,5 +1,6 @@
 'use client'
 import React from 'react'
+import Link from 'next/link';
 
 
 
@@ -180,7 +181,7 @@ const page = () => {
                                     </p>
 
 
-                                    <p className='want-sign'>تريد انشاء حساب كصنايعي؟ <a href="#">سجل الان</a>!</p>
+                                    <p className='want-sign'>تريد انشاء حساب كصنايعي؟ <Link href="#">سجل الان</Link>!</p>
                                 </div>
 
                             </div>
@@ -219,7 +220,7 @@ const page = () => {
                                     </p>
 
 
-                                    <p className='want-sign'>تريد انشاء حساب كصنايعي؟ <a href="#">سجل الان</a>!</p>
+                                    <p className='want-sign'>تريد انشاء حساب كصنايعي؟ <Link href="#">سجل الان</Link>!</p>
                                 </div>
                             </div>
 

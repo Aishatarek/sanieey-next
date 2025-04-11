@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import React from 'react'
 
 
@@ -17,16 +18,16 @@ const Footer = () => {
               </p>
               <div className="social-icons">
                 <div className="social-icon">
-                  <a href="#" ><img src="/images/Vector (6).svg" alt="" /></a>
+                  <Link href="#" ><img src="/images/Vector (6).svg" alt="" /></Link>
                 </div>
                 <div className="social-icon">
-                  <a href="#" ><img src="/images/Vector (7).svg" alt="" /></a>
+                  <Link href="#" ><img src="/images/Vector (7).svg" alt="" /></Link>
                 </div>
                 <div className="social-icon">
-                  <a href="#" ><img src="/images/Vector (8).svg" alt="" /></a>
+                  <Link href="#" ><img src="/images/Vector (8).svg" alt="" /></Link>
                 </div>
                 <div className="social-icon">
-                  <a href="#" ><img src="/images/Vector (9).svg" alt="" /></a>
+                  <Link href="#" ><img src="/images/Vector (9).svg" alt="" /></Link>
                 </div>
               </div>
             </div>
@@ -38,22 +39,22 @@ const Footer = () => {
             </h5>
             <ul>
               <li>
-                <a href="#">» الرئيسية</a>
+                <Link href="#">» الرئيسية</Link>
               </li>
               <li>
-                <a href="#">» اكتشف التخصصات</a>
+                <Link href="#">» اكتشف التخصصات</Link>
               </li>
               <li>
-                <a href="#">» قائمة الصنايعية</a>
+                <Link href="#">» قائمة الصنايعية</Link>
               </li>
               <li>
-                <a href="#">» رشّـح صـنايعي</a>
+                <Link href="#">» رشّـح صـنايعي</Link>
               </li>
               <li>
-                <a href="#">» تواصل معنا</a>
+                <Link href="#">» تواصل معنا</Link>
               </li>
               <li>
-                <a href="#">» من نحن؟</a>
+                <Link href="#">» من نحن؟</Link>
               </li>
             </ul>
           </div>
