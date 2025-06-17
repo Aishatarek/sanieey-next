@@ -1,0 +1,403 @@
+'use client'
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
+
+interface FormDataState {
+  projectDescription: string;
+  dateJobDone: string;
+  pictures: File[];
+}
+
+interface Project {
+  id: string;
+  projectDescription: string;
+  dateJobDone: string;
+  pictures: string[];
+}
+
+const page = () => {
+    const router = useRouter()
+    const searchParams = useSearchParams()
+    const id = searchParams.get('id')
+    
+    const [formData, setFormData] = useState<FormDataState>({
+        projectDescription: '',
+        dateJobDone: '',
+        pictures: []
+    })
+    const [previewImages, setPreviewImages] = useState<string[]>([])
+    const [existingImages, setExistingImages] = useState<string[]>([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
+
+    useEffect(() => {
+        const fetchProject = async () => {
+            try {
+                const authToken = localStorage.getItem('authToken')
+                if (!authToken) {
+                    router.push('/login')
+                    return
+                }
+
+                if (!id) return
+
+                const response = await fetch(`https://sani3ywebapiv1.runasp.net/api/CraftsmanWorks/GetById/${id}`, {
+                    method: 'GET',
+                    headers: {
+                        'accept': '*/*',
+                        'Authorization': `Bearer ${authToken}`
+                    }
+                })
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`)
+                }
+
+                const data = await response.json()
+                setFormData({
+                    projectDescription: data.projectDescription,
+                    dateJobDone: data.dateJobDone.split('T')[0],
+                    pictures: []
+                })
+                setExistingImages(data.pictures || [])
+                setPreviewImages(data.pictures || [])
+            } catch (error) {
+                console.error('Error fetching project:', error)
+                setError(error instanceof Error ? error.message : 'An unknown error occurred')
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchProject()
+    }, [id, router])
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }))
+    }
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+        
+        const files = Array.from(e.target.files) as File[]
+        
+        // Create preview URLs
+        const previews = files.map(file => URL.createObjectURL(file))
+        setPreviewImages([...existingImages, ...previews])
+        
+        setFormData(prev => ({
+            ...prev,
+            pictures: [...prev.pictures, ...files]
+        }))
+    }
+
+    const removeImage = (index: number) => {
+        // If it's an existing image (from URL)
+        if (index < existingImages.length) {
+            // In a real app, you'd need to send a request to delete this image from server
+            const updatedExisting = [...existingImages]
+            updatedExisting.splice(index, 1)
+            setExistingImages(updatedExisting)
+        } 
+        // If it's a new image (from File)
+        else {
+            const adjustedIndex = index - existingImages.length
+            const updatedPictures = [...formData.pictures]
+            updatedPictures.splice(adjustedIndex, 1)
+            setFormData(prev => ({ ...prev, pictures: updatedPictures }))
+            
+            // Revoke the object URL to avoid memory leaks
+            URL.revokeObjectURL(previewImages[index])
+        }
+        
+        const updatedPreviews = [...previewImages]
+        updatedPreviews.splice(index, 1)
+        setPreviewImages(updatedPreviews)
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        
+        try {
+            const authToken = localStorage.getItem('authToken')
+            if (!authToken) {
+                router.push('/login')
+                return
+            }
+
+            const formDataToSend = new FormData()
+            
+            formDataToSend.append('ProjectDescription', formData.projectDescription)
+            formDataToSend.append('DateJobDone', formData.dateJobDone)
+            
+            formData.pictures.forEach((file) => {
+                formDataToSend.append(`Pictures`, file)
+            })
+
+            // For existing images, you might need to send their IDs if your API requires it
+            // existingImages.forEach((imgUrl, index) => {
+            //     formDataToSend.append(`ExistingImageIds[${index}]`, getImageIdFromUrl(imgUrl))
+            // })
+
+            const response = await fetch(`https://sani3ywebapiv1.runasp.net/api/CraftsmanWorks/update/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                },
+                body: formDataToSend
+            })
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            alert('تم تحديث العمل بنجاح')
+            router.push('/sanieey-dashboard/projects')
+        } catch (error) {
+            console.error('Error updating project:', error)
+            alert('حدث خطأ أثناء تحديث العمل')
+        }
+    }
+
+    const handleDelete = async () => {
+        if (!confirm('هل أنت متأكد من حذف هذا العمل؟')) return
+        
+        try {
+            const authToken = localStorage.getItem('authToken')
+            if (!authToken) {
+                router.push('/login')
+                return
+            }
+
+            const response = await fetch(`https://sani3ywebapiv1.runasp.net/api/CraftsmanWorks/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'accept': '*/*',
+                    'Authorization': `Bearer ${authToken}`
+                }
+            })
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`)
+            }
+
+            alert('تم حذف العمل بنجاح')
+            router.push('/sanieey-dashboard/projects')
+        } catch (error) {
+            console.error('Error deleting project:', error)
+            alert('حدث خطأ أثناء حذف العمل')
+        }
+    }
+
+    if (loading) {
+        return (
+            <div className="bg-white min-h-screen flex justify-center items-center">
+                <p>جاري تحميل بيانات المشروع...</p>
+            </div>
+        )
+    }
+
+    if (error) {
+        return (
+            <div className="bg-white min-h-screen flex justify-center items-center">
+                <p className="text-red-500">{error}</p>
+            </div>
+        )
+    }
+
+    return (
+        <div className='container m-auto mt-1.5'>
+
+        <div className='bg-white'>
+
+            <div className="nam">
+                <span>الـمــلـف الـشخـصـي</span> 
+                <img src="/images/Fill 177.svg" alt="" />
+            </div>
+            
+            <div className="flex flex-wrap gap-4 p-4 bg-white">
+                <div className="w-full md:w-3/12">
+                    <div className='personal-container'>
+                        <div>
+                            <ul className="personal-menu">
+                                <Link href="/sanieey-dashboard/main-dashboard">
+                                    <li className="btn0" id="hd">
+                                        <svg className="svg-a" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                            <path d="M11 20.4V4.6C11 3.1 10.36 2.5 8.77 2.5H4.73C3.14 2.5 2.5 3.1 2.5 4.6V20.4C2.5 21.9 3.14 22.5 4.73 22.5H8.77C10.36 22.5 11 21.9 11 20.4Z" />
+                                            <path d="M21.5 11.4V4.6C21.5 3.1 20.86 2.5 19.27 2.5H15.23C13.64 2.5 13 3.1 13 4.6V11.4C13 12.9 13.64 13.5 15.23 13.5H19.27C20.86 13.5 21.5 12.9 21.5 11.4Z" />
+                                            <path d="M21.5 20.4V17.6C21.5 16.1 20.86 15.5 19.27 15.5H15.23C13.64 15.5 13 16.1 13 17.6V20.4C13 21.9 13.64 22.5 15.23 22.5H19.27C20.86 22.5 21.5 21.9 21.5 20.4Z" />
+                                        </svg>
+                                        لوحة التحكم
+                                    </li>
+                                </Link>
+
+                                <Link href="/sanieey-dashboard/orders">
+                                    <li className="btn0">
+                                        <svg className="svg-a" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                            <path opacity="0.4" d="M21.0406 7.69L12.0006 12.92L2.96063 7.69C3.36063 6.95 3.94063 6.3 4.59063 5.94L9.93063 2.98C11.0706 2.34 12.9306 2.34 14.0706 2.98L19.4106 5.94C20.0606 6.3 20.6406 6.95 21.0406 7.69Z" />
+                                            <path opacity="0.6" d="M12.0006 12.9204V22.5004C11.2506 22.5004 10.5006 22.3404 9.93062 22.0204L4.59063 19.0604C3.38063 18.3904 2.39062 16.7104 2.39062 15.3304V9.67043C2.39062 9.03043 2.61062 8.33043 2.96062 7.69043L12.0006 12.9204Z" />
+                                            <path d="M21.6106 9.67043V15.3304C21.6106 16.7104 20.6206 18.3904 19.4106 19.0604L14.0706 22.0204C13.5006 22.3404 12.7506 22.5004 12.0006 22.5004V12.9204L21.0406 7.69043C21.3906 8.33043 21.6106 9.03043 21.6106 9.67043Z" />
+                                        </svg>
+                                        إدارة الطلبات
+                                    </li>
+                                </Link>
+
+                                <Link href="/sanieey-dashboard/projects">
+                                    <li className="btn0 active">
+                                        <svg className="svg-a" xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                                            <path opacity="0.4" d="M0.000183105 9.57812C0.0501831 11.9161 0.190183 15.9151 0.210183 16.3561C0.281183 17.2991 0.642183 18.2521 1.20418 18.9241C1.98618 19.8671 2.94918 20.2881 4.29218 20.2881C6.14818 20.2981 8.19418 20.2981 10.1812 20.2981C12.1762 20.2981 14.1122 20.2981 15.7472 20.2881C17.0712 20.2881 18.0642 19.8561 18.8362 18.9241C19.3982 18.2521 19.7592 17.2891 19.8102 16.3561C19.8302 15.9851 19.9302 11.6441 19.9902 9.57812H0.000183105Z" />
+                                            <path d="M9.24536 13.8838V15.1778C9.24536 15.5918 9.58136 15.9278 9.99536 15.9278C10.4094 15.9278 10.7454 15.5918 10.7454 15.1778V13.8838C10.7454 13.4698 10.4094 13.1338 9.99536 13.1338C9.58136 13.1338 9.24536 13.4698 9.24536 13.8838Z" />
+                                            <path fillRule="evenodd" clipRule="evenodd" d="M8.21131 13.056C8.11131 13.419 7.7623 13.651 7.38431 13.601C4.8333 13.245 2.39531 12.34 0.337305 10.981C0.126305 10.843 0.000305176 10.607 0.000305176 10.355V6.889C0.000305176 4.789 1.71231 3.081 3.81731 3.081H5.78431C5.97231 1.629 7.20231 0.5 8.70431 0.5H11.2863C12.7873 0.5 14.0183 1.629 14.2063 3.081H16.1833C18.2823 3.081 19.9903 4.789 19.9903 6.889V10.355C19.9903 10.607 19.8633 10.842 19.6543 10.981C17.5923 12.346 15.1443 13.255 12.5763 13.61C12.5413 13.615 12.5073 13.617 12.4733 13.617C12.1343 13.617 11.8313 13.388 11.7463 13.052C11.5443 12.256 10.8213 11.699 9.9903 11.699C9.1483 11.699 8.43331 12.244 8.21131 13.056ZM11.2863 2H8.70431C8.03131 2 7.46931 2.46 7.30131 3.081H12.6883C12.5203 2.46 11.9583 2 11.2863 2Z" />
+                                        </svg>
+                                        الأعمال السابقة
+                                    </li>
+                                </Link>
+
+                                <Link href="/sanieey-dashboard/reviews">
+                                    <li className="btn0">
+                                        <svg className="svg-a" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                            <path d="M13.15 15.8699C12.93 15.5499 12.54 15.3699 12.09 15.3699H9.76C9.61 15.3699 9.46 15.3099 9.37 15.1899C9.27 15.0699 9.23 14.9199 9.25 14.7499L9.54 12.8899C9.66 12.3399 9.29 11.7099 8.74 11.5199C8.22 11.3299 7.62 11.5899 7.37 11.9599L5.06 15.3999V14.9699C5.06 14.1299 4.7 13.7899 3.82 13.7899H3.24C2.36 13.7999 2 14.1399 2 14.9799V20.6899C2 21.5299 2.36 21.8699 3.24 21.8699H3.82C4.66 21.8699 5.01 21.5399 5.04 20.7799L6.79 22.1299C7.04 22.3699 7.57 22.4999 7.95 22.4999H10.16C10.92 22.4999 11.68 21.9299 11.86 21.2299L13.26 16.9799C13.41 16.5699 13.37 16.1799 13.15 15.8699Z" />
+                                            <path d="M21.1098 3.11047H20.5298C19.6898 3.11047 19.3398 3.44047 19.2998 4.20047L17.5498 2.85047C17.3098 2.61047 16.7698 2.48047 16.3898 2.48047H14.1798C13.4198 2.48047 12.6598 3.05047 12.4798 3.75047L11.0798 8.00047C10.9298 8.41047 10.9798 8.80047 11.1898 9.11047C11.4098 9.43047 11.7998 9.61047 12.2498 9.61047H14.5798C14.7298 9.61047 14.8798 9.67047 14.9698 9.79047C15.0698 9.91047 15.1098 10.0605 15.0898 10.2305L14.7998 12.0905C14.6798 12.6405 15.0498 13.2705 15.5998 13.4605C16.1198 13.6505 16.7198 13.3905 16.9698 13.0205L19.2798 9.58047V10.0105C19.2798 10.8505 19.6398 11.1905 20.5198 11.1905H21.0998C21.9798 11.1905 22.3398 10.8505 22.3398 10.0105V4.28047C22.3498 3.45047 21.9898 3.11047 21.1098 3.11047Z" />
+                                        </svg>
+                                        تقييمات العملاء
+                                    </li>
+                                </Link>
+
+                                <Link href="/sanieey-dashboard/personal-data">
+                                    <li className="btn0">
+                                        <svg className="svg-a" xmlns="http://www.w3.org/2000/svg" width="24" height="25" viewBox="0 0 24 25" fill="none">
+                                            <path d="M16.19 2.5H7.81C4.17 2.5 2 4.67 2 8.31V16.69C2 19.5 3.29 21.43 5.56 22.16C6.22 22.39 6.98 22.5 7.81 22.5H16.19C17.02 22.5 17.78 22.39 18.44 22.16C20.71 21.43 22 19.5 22 16.69V8.31C22 4.67 19.83 2.5 16.19 2.5ZM20.5 16.69C20.5 18.83 19.66 20.18 17.97 20.74C17 18.83 14.7 17.47 12 17.47C9.3 17.47 7.01 18.82 6.03 20.74H6.02C4.35 20.2 3.5 18.84 3.5 16.7V8.31C3.5 5.49 4.99 4 7.81 4H16.19C19.01 4 20.5 5.49 20.5 8.31V16.69Z" />
+                                            <path d="M11.9999 8.5C10.0199 8.5 8.41992 10.1 8.41992 12.08C8.41992 14.06 10.0199 15.67 11.9999 15.67C13.9799 15.67 15.5799 14.06 15.5799 12.08C15.5799 10.1 13.9799 8.5 11.9999 8.5Z" />
+                                        </svg>
+                                        البيانات الشخصية
+                                    </li>
+                                </Link>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="w-full md:w-8/12 bg-white">
+                    <div className="orders-box">
+                        <div className="nam">
+                            <span>تعديل العمل</span>
+                            <img src="/images/Fill 177.svg" alt="" />
+                        </div>
+
+                        <div className="reqw">
+                            <form onSubmit={handleSubmit}>
+                                <div className="req-n2">
+                                    <textarea 
+                                        name="projectDescription"
+                                        value={formData.projectDescription}
+                                        onChange={handleInputChange}
+                                        placeholder="مثـال: أريد تـركــيب إضــاءات جـديـدة / عدد الغرف / حجم المكان." 
+                                    />
+                                    <label>وصف المشروع</label>
+                                </div>
+                                
+                                <div className="req-req">
+                                    <div className="req-date">
+                                        <div className="date-req">
+                                            <label htmlFor="">تاريـخ انـجــاز الـمـشــروع</label>
+                                            <div className="input-date">
+                                                <input 
+                                                    type="date" 
+                                                    name="dateJobDone"
+                                                    value={formData.dateJobDone}
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="req-d-3">
+                                            <div>
+                                                <label className="l1">صور المشروع</label>
+                                            </div>
+                                            
+                                            <div className="req-d-0">
+                                                <div>
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                                        <path d="M9 22H15C20 22 22 20 22 15V9C22 4 20 2 15 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22Z" stroke="#292D32" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <path d="M9 10C10.1046 10 11 9.10457 11 8C11 6.89543 10.1046 6 9 6C7.89543 6 7 6.89543 7 8C7 9.10457 7.89543 10 9 10Z" stroke="#292D32" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                        <path d="M2.66992 18.9496L7.59992 15.6396C8.38992 15.1096 9.52992 15.1696 10.2399 15.7796L10.5699 16.0696C11.3499 16.7396 12.6099 16.7396 13.3899 16.0696L17.5499 12.4996C18.3299 11.8296 19.5899 11.8296 20.3699 12.4996L21.9999 13.8996" stroke="#292D32" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                                                    </svg>
+                                                </div>
+
+                                                <div>
+                                                    <label htmlFor="image-input" className="clik" id="file-label">
+                                                        اضغط هنا لتحميل صورة إضافية
+                                                    </label>
+                                                    <input 
+                                                        type="file" 
+                                                        id="image-input" 
+                                                        multiple
+                                                        onChange={handleImageChange}
+                                                        accept="image/*"
+                                                    />
+                                                </div>
+                                                
+                                                <div>
+                                                    <span id="error-message">صيغة JPG و PNG فقط - الحد الأقصى (5 ميجابايت)</span>
+                                                </div>
+                                            </div>
+                                            
+                                            {/* عرض الصور الحالية والجديدة */}
+                                            <div className="mt-4 grid grid-cols-3 gap-2">
+                                                {previewImages.map((img, index) => (
+                                                    <div key={index} className="relative">
+                                                        <img 
+                                                            src={img} 
+                                                            alt={`صورة ${index + 1}`}
+                                                            className="w-full h-32 object-cover rounded"
+                                                        />
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => removeImage(index)}
+                                                            className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="btn-w flex gap-4">
+                                    <button type="submit" className="btn-tmtm">
+                                        <span>حفظ التعديلات</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M21.3759 12C21.3759 12.2984 21.2574 12.5846 21.0464 12.7955C20.8354 13.0065 20.5493 13.125 20.2509 13.125H6.46964L11.2996 17.9541C11.511 18.1654 11.6297 18.4521 11.6297 18.751C11.6297 19.0499 11.511 19.3365 11.2996 19.5478C11.0883 19.7592 10.8016 19.8779 10.5028 19.8779C10.2039 19.8779 9.91723 19.7592 9.70589 19.5478L2.95589 12.7978C2.85101 12.6933 2.76779 12.5691 2.71101 12.4324C2.65423 12.2956 2.625 12.149 2.625 12.001C2.625 11.8529 2.65423 11.7063 2.71101 11.5696C2.76779 11.4328 2.85101 11.3086 2.95589 11.2041L9.70589 4.4541C9.81053 4.34945 9.93477 4.26644 10.0715 4.20981C10.2082 4.15317 10.3548 4.12402 10.5028 4.12402C10.6508 4.12402 10.7973 4.15317 10.934 4.20981C11.0708 4.26644 11.195 4.34945 11.2996 4.4541C11.4043 4.55875 11.4873 4.68298 11.5439 4.81971C11.6006 4.95644 11.6297 5.10298 11.6297 5.25097C11.6297 5.39897 11.6006 5.54551 11.5439 5.68224C11.4873 5.81897 11.4043 5.9432 11.2996 6.04785L6.46964 10.875H20.2509C20.5493 10.875 20.8354 10.9936 21.0464 11.2045C21.2574 11.4155 21.3759 11.7017 21.3759 12Z" fill="white" />
+                                        </svg>
+                                    </button>
+                                    
+                                    <button 
+                                        type="button" 
+                                        onClick={handleDelete}
+                                        className="btn-tmtm bg-red-600 hover:bg-red-700"
+                                    >
+                                        <span>حذف العمل</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M21.0697 5.23C19.4597 5.07 17.8497 4.95 16.2297 4.86V4.85L16.0097 3.55C15.8597 2.63 15.6397 1.25 13.2997 1.25H10.6797C8.34967 1.25 8.12967 2.57 7.96967 3.54L7.75967 4.82C6.82967 4.88 5.89967 4.94 4.96967 5.03L2.92967 5.23C2.50967 5.27 2.20967 5.64 2.24967 6.05C2.28967 6.46 2.64967 6.76 3.06967 6.72L5.10967 6.52C10.3497 6 15.6297 6.2 20.9297 6.73C20.9597 6.73 20.9797 6.73 21.0097 6.73C21.3897 6.73 21.7197 6.44 21.7597 6.05C21.7897 5.64 21.4897 5.27 21.0697 5.23Z" fill="white"/>
+                                            <path d="M19.2297 8.14C18.9897 7.89 18.6597 7.75 18.3197 7.75H5.67975C5.33975 7.75 4.99975 7.89 4.76975 8.14C4.53975 8.39 4.40975 8.73 4.42975 9.08L5.04975 19.34C5.15975 20.86 5.29975 22.76 8.78975 22.76H15.2097C18.6997 22.76 18.8397 20.87 18.9497 19.34L19.5697 9.09C19.5897 8.73 19.4597 8.39 19.2297 8.14ZM13.6597 17.75H10.3297C9.91975 17.75 9.57975 17.41 9.57975 17C9.57975 16.59 9.91975 16.25 10.3297 16.25H13.6597C14.0697 16.25 14.4097 16.59 14.4097 17C14.4097 17.41 14.0697 17.75 13.6597 17.75ZM14.4997 13.75H9.49975C9.08975 13.75 8.74975 13.41 8.74975 13C8.74975 12.59 9.08975 12.25 9.49975 12.25H14.4997C14.9097 12.25 15.2497 12.59 15.2497 13C15.2497 13.41 14.9097 13.75 14.4997 13.75Z" fill="white"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    )
+}
+
+export default page

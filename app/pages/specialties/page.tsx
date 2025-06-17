@@ -1,7 +1,44 @@
-import React from 'react'
+'use client'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
+import Swal from 'sweetalert2';
 
 const specialties = () => {
+  const [professions, setProfessions] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchProfessions = async () => {
+      try {
+        const token = localStorage.getItem('authToken') 
+        const res = await fetch(
+          'https://sani3ywebapiv1.runasp.net/api/ExploreProfessions',
+          {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            }
+          }
+        )
+        const data = await res.json()
+        if (res.ok) {
+          setProfessions(data)
+        } else {
+          Swal.fire('خطأ', data.message || 'فشل جلب التخصصات', 'error')
+        }
+      } catch (error) {
+        console.error(error)
+        Swal.fire('خطأ', 'تعذر الاتصال بالخادم', 'error')
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchProfessions()
+  }, [])
+
+  if (loading) return <p>جاري التحميل...</p>
+
   return (
     <>
 <section>
@@ -9,54 +46,28 @@ const specialties = () => {
         <div className="nam"><span>قــائمـة الــتخـصصـات</span> <img src="/images/Fill 177.svg" alt="" />
         </div>
         <div className="menu-Specialties0 grid grid-cols-1 md:grid-cols-4 ">
-          <div className="Specialties">
+        {professions.map((prof) => (
+              <div
+                key={prof.id}
+                className="Specialties"
+              >
+                <div>
+                  <img
+                    src={prof?.imagePath? `https://sani3ywebapiv1.runasp.net${prof?.imagePath}` : '/images/Lightning.png'}
+                    width="150px"
+                    alt={prof?.name}
+                  />
+                </div>
+                <div>
+                  <span className="specialties-name">{prof.name}</span>
+                </div>
+              </div>
+            ))}
+          {/* <div className="Specialties">
             <div><img src="/images/Lightning.png" alt="" /></div>
             <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
-          <div className="Specialties">
-            <div><img src="/images/Lightning.png" alt="" /></div>
-            <div><span className="specialties-name">كـــهربـائــي</span></div>
-          </div>
+          </div> */}
+        
 
         </div>
       </div>
@@ -74,7 +85,7 @@ const specialties = () => {
             <img src="/images/Fill 178.svg" alt="" />
             
              <span>أرسل إلينا الآن وسنقوم بإضافتها على الفور!</span> </div>
-            <div className="btn-more"> <Link href="#"> تـــواصــل مــعــنـا</Link></div>
+            <div className="btn-more"> <Link href="/contactus"> تـــواصــل مــعــنـا</Link></div>
 
           </div>
           <div className="m8">

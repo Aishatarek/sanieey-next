@@ -39,22 +39,22 @@ const Footer = () => {
             </h5>
             <ul>
               <li>
-                <Link href="#">» الرئيسية</Link>
+                <Link href="/">» الرئيسية</Link>
               </li>
               <li>
-                <Link href="#">» اكتشف التخصصات</Link>
+                <Link href="/specialties">» اكتشف التخصصات</Link>
               </li>
               <li>
-                <Link href="#">» قائمة الصنايعية</Link>
+                <Link href="/industrial-list">» قائمة الصنايعية</Link>
               </li>
               <li>
-                <Link href="#">» رشّـح صـنايعي</Link>
+                <Link href="/recommend">» رشّـح صـنايعي</Link>
               </li>
               <li>
-                <Link href="#">» تواصل معنا</Link>
+                <Link href="/contactus">» تواصل معنا</Link>
               </li>
               <li>
-                <Link href="#">» من نحن؟</Link>
+                <Link href="/about">» من نحن؟</Link>
               </li>
             </ul>
           </div>

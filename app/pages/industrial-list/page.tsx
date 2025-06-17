@@ -1,340 +1,238 @@
-import React from 'react'
+'use client'
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-
-const page = () => {
-    return (
-        <div className='screen'>
-            <div className="container0">
-                <div className="menu">
-
-                    <div className="nam"><span>قــائمـة الــصنــايـعــية</span> <img src="/images/Fill 177.svg" alt="" />
-
-                    </div>
-                    <div className='filter  grid grid-cols-1 md:grid-cols-4 gap-3.5'>
-                        <div className='select-div'>
-                            <p>
-                            المهنــة
-                            </p>
-                            <select>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-
-                            </select>
-                        </div>
-                        <div className='select-div'>
-                            <p>
-                            المــنطقــة
-                            </p>
-                            <select>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-
-                            </select>
-                        </div>
-                        <div className='select-div'>
-                            <p>
-                            الــتقــييم
-                            </p>
-                            <select>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-
-                            </select>
-                        </div>
-                        <div className='select-div'>
-                            <p>
-                            الـهــويـة 
-                            </p>
-                            <select>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-                                <option value="الـكــل">الـكــل</option>
-
-                            </select>
-                        </div>
-                     
-                    </div>
-
-
-
-               
-                </div>
-            </div>
-            <section>
-
-<div className="frame-280  grid grid-cols-1 md:grid-cols-4">
-
-    <div className="frame-28">
-        <div className="menu-list-plus">
-            <div className="img-profile"> <img src="/images/Ellipse 6.svg" alt="" /></div>
-            <div className="profile-name">
-                <div><span>ربيع احمد </span></div>
-                <div><img src="//images/verify.svg" alt="" /></div>
-            </div>
-            <div className="work"> <span>كهربائي</span></div>
-            <div className="location">
-                <div><img src="/images/Location.svg" alt="" /></div>
-                <div> <span>مدينة 6 اكتوبر - الجيزة</span></div>
-            </div>
-            <div className="line0">
-                <div className="line0"></div>
-            </div>
-            <div className="rating-div">
-
-                <div className="ratimg-text">
-                    <span>الــتقــييم</span>
-                </div>
-                <div className="riting">
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt=""/>
-                    <img src="/images/Starf.svg" alt=""/>
-                    <img src="/images/Star.svg" alt=""/>
-                    <img src="/images/Star.svg" alt=""/>
-                </div>
-            </div>
-            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
-
-        </div>
-    </div>
-
-    <div className="frame-28">
-        <div className="menu-list-plus">
-            <div className="img-profile"> <img src="/images/Ellipse 6.svg" alt="" /></div>
-            <div className="profile-name">
-                <div><span>ربيع احمد </span></div>
-                <div><img src="//images/verify.svg" alt="" /></div>
-            </div>
-            <div className="work"> <span>كهربائي</span></div>
-            <div className="location">
-                <div><img src="/images/Location.svg" alt="" /></div>
-                <div> <span>مدينة 6 اكتوبر - الجيزة</span></div>
-            </div>
-            <div className="line0">
-                <div className="line0"></div>
-            </div>
-            <div className="rating-div">
-
-                <div className="ratimg-text">
-                    <span>الــتقــييم</span>
-                </div>
-                <div className="riting">
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                </div>
-            </div>
-            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
-
-        </div>
-    </div>
-
-    <div className="frame-28">
-        <div className="menu-list-plus">
-            <div className="img-profile"> <img src="/images/Ellipse 6.svg" alt="" /></div>
-            <div className="profile-name">
-                <div><span>ربيع احمد </span></div>
-                <div><img src="//images/verify.svg" alt="" /></div>
-            </div>
-            <div className="work"> <span>كهربائي</span></div>
-            <div className="location">
-                <div><img src="/images/Location.svg" alt="" /></div>
-                <div> <span>مدينة 6 اكتوبر - الجيزة</span></div>
-            </div>
-            <div className="line0">
-                <div className="line0"></div>
-            </div>
-            <div className="rating-div">
-
-                <div className="ratimg-text">
-                    <span>الــتقــييم</span>
-                </div>
-                <div className="riting">
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                </div>
-            </div>
-            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
-
-        </div>
-    </div>
-    <div className="frame-28">
-        <div className="menu-list-plus">
-            <div className="img-profile"> <img src="/images/Ellipse 6.svg" alt="" /></div>
-            <div className="profile-name">
-                <div><span>ربيع احمد </span></div>
-                <div><img src="//images/verify.svg" alt="" /></div>
-            </div>
-            <div className="work"> <span>كهربائي</span></div>
-            <div className="location">
-                <div><img src="/images/Location.svg" alt="" /></div>
-                <div> <span>مدينة 6 اكتوبر - الجيزة</span></div>
-            </div>
-            <div className="line0">
-                <div className="line0"></div>
-            </div>
-            <div className="rating-div">
-
-                <div className="ratimg-text">
-                    <span>الــتقــييم</span>
-                </div>
-                <div className="riting">
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                </div>
-            </div>
-            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
-
-        </div>
-    </div>
-    <div className="frame-28">
-        <div className="menu-list-plus">
-            <div className="img-profile"> <img src="/images/Ellipse 6.svg" alt="" /></div>
-            <div className="profile-name">
-                <div><span>ربيع احمد </span></div>
-                <div><img src="//images/verify.svg" alt="" /></div>
-            </div>
-            <div className="work"> <span>كهربائي</span></div>
-            <div className="location">
-                <div><img src="/images/Location.svg" alt="" /></div>
-                <div> <span>مدينة 6 اكتوبر - الجيزة</span></div>
-            </div>
-            <div className="line0">
-                <div className="line0"></div>
-            </div>
-            <div className="rating-div">
-
-                <div className="ratimg-text">
-                    <span>الــتقــييم</span>
-                </div>
-                <div className="riting">
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                </div>
-            </div>
-            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
-
-        </div>
-    </div>
-    <div className="frame-28">
-        <div className="menu-list-plus">
-            <div className="img-profile"> <img src="/images/Ellipse 6.svg" alt="" /></div>
-            <div className="profile-name">
-                <div><span>ربيع احمد </span></div>
-                <div><img src="//images/verify.svg" alt="" /></div>
-            </div>
-            <div className="work"> <span>كهربائي</span></div>
-            <div className="location">
-                <div><img src="/images/Location.svg" alt="" /></div>
-                <div> <span>مدينة 6 اكتوبر - الجيزة</span></div>
-            </div>
-            <div className="line0">
-                <div className="line0"></div>
-            </div>
-            <div className="rating-div">
-
-                <div className="ratimg-text">
-                    <span>الــتقــييم</span>
-                </div>
-                <div className="riting">
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                </div>
-            </div>
-            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
-
-        </div>
-    </div>
-    <div className="frame-28">
-        <div className="menu-list-plus">
-            <div className="img-profile"> <img src="/images/Ellipse 6.svg" alt="" /></div>
-            <div className="profile-name">
-                <div><span>ربيع احمد </span></div>
-                <div><img src="//images/verify.svg" alt="" /></div>
-            </div>
-            <div className="work"> <span>كهربائي</span></div>
-            <div className="location">
-                <div><img src="/images/Location.svg" alt="" /></div>
-                <div> <span>مدينة 6 اكتوبر - الجيزة</span></div>
-            </div>
-            <div className="line0">
-                <div className="line0"></div>
-            </div>
-            <div className="rating-div">
-
-                <div className="ratimg-text">
-                    <span>الــتقــييم</span>
-                </div>
-                <div className="riting">
-                    <img src="/images/Starf.svg"  alt="" />
-                    <img src="/images/Starf.svg"  alt="" />
-                    <img src="/images/Starf.svg"  alt="" />
-                    <img src="/images/Star.svg"  alt="" />
-                    <img src="/images/Star.svg"  alt="" />
-                </div>
-            </div>
-            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
-
-        </div>
-    </div>
-    <div className="frame-28">
-        <div className="menu-list-plus">
-            <div className="img-profile"> <img src="/images/Ellipse 6.svg" alt="" /></div>
-            <div className="profile-name">
-                <div><span>ربيع احمد </span></div>
-                <div><img src="//images/verify.svg" alt="" /></div>
-            </div>
-            <div className="work"> <span>كهربائي</span></div>
-            <div className="location">
-                <div><img src="/images/Location.svg" alt="" /></div>
-                <div> <span>مدينة 6 اكتوبر - الجيزة</span></div>
-            </div>
-            <div className="line0">
-                <div className="line0"></div>
-            </div>
-            <div className="rating-div">
-
-                <div className="ratimg-text">
-                    <span>الــتقــييم</span>
-                </div>
-                <div className="riting">
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Starf.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                    <img src="/images/Star.svg" alt="" />
-                </div>
-            </div>
-            <div className="more-det"><Link href="#">عرض التفاصيل</Link></div>
-
-        </div>
-    </div>
-</div>
-
-</section>
-        </div>
-    )
+interface Craftsman {
+  id: number;
+  name: string;
+  profession: string;
+  location: string;
+  rating: number;
+  isTrusted: boolean;
+  imageUrl: string;
 }
 
-export default page
+const page = () => {
+  const [craftsmen, setCraftsmen] = useState<Craftsman[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [filters, setFilters] = useState({
+    ProfessionId: '',
+    Location: '',
+    MinRating: '',
+    IsTrusted: '',
+    PageNumber: 1,
+    PageSize: 8
+  });
+
+  const [professions, setProfessions] = useState([
+    { id: '', name: 'الـكــل' },
+    { id: '1', name: 'كهربائي' },
+    { id: '2', name: 'سباك' },
+    { id: '3', name: 'نجار' }
+  ]);
+
+  const [locations, setLocations] = useState([
+    { value: '', label: 'الـكــل' },
+    { value: '6 اكتوبر', label: 'مدينة 6 اكتوبر' },
+    { value: 'الجيزة', label: 'الجيزة' },
+    { value: 'القاهرة', label: 'القاهرة' }
+  ]);
+
+  const ratings = [
+    { value: '', label: 'الـكــل' },
+    { value: '3', label: '3 نجوم فأكثر' },
+    { value: '4', label: '4 نجوم فأكثر' },
+    { value: '4.5', label: '4.5 نجوم فأكثر' }
+  ];
+
+  const trustOptions = [
+    { value: '', label: 'الـكــل' },
+    { value: 'true', label: 'موثوق فقط' },
+    { value: 'false', label: 'غير موثوق' }
+  ];
+
+  useEffect(() => {
+    fetchCraftsmen();
+  }, [filters]);
+
+  const fetchCraftsmen = async () => {
+    try {
+      setLoading(true);
+      const authToken = localStorage.getItem('authToken');
+
+      // Build query string from filters
+      const queryParams = new URLSearchParams();
+      if (filters.ProfessionId) queryParams.append('ProfessionId', filters.ProfessionId);
+      if (filters.Location) queryParams.append('Location', filters.Location);
+      if (filters.MinRating) queryParams.append('MinRating', filters.MinRating);
+      if (filters.IsTrusted) queryParams.append('IsTrusted', filters.IsTrusted);
+      queryParams.append('PageNumber', filters.PageNumber.toString());
+      queryParams.append('PageSize', filters.PageSize.toString());
+
+
+      const response = await fetch(
+        `https://sani3ywebapiv1.runasp.net/api/User/Get/craftsmenList?${queryParams}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+      
+      const data = await response.json();
+      
+      setCraftsmen(data);
+    } catch (error) {
+      console.error('Error fetching craftsmen:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFilters(prev => ({
+      ...prev,
+      [name]: value,
+      PageNumber: 1 // Reset to first page when filters change
+    }));
+  };
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    for (let i = 1; i <= 5; i++) {
+      if (i <= fullStars) {
+        stars.push(<img key={i} src="/images/Starf.svg" alt="star" />);
+      } else if (i === fullStars + 1 && hasHalfStar) {
+        stars.push(<img key={i} src="/images/StarHalf.svg" alt="half star" />);
+      } else {
+        stars.push(<img key={i} src="/images/Star.svg" alt="empty star" />);
+      }
+    }
+    
+    return stars;
+  };
+
+  return (
+    <div className='screen'>
+      <div className="container0">
+        <div className="menu">
+          <div className="nam">
+            <span>قــائمـة الــصنــايـعــية</span> 
+            <img src="/images/Fill 177.svg" alt="" />
+          </div>
+          
+          <div className='filter grid grid-cols-1 md:grid-cols-4 gap-3.5'>
+            <div className='select-div'>
+              <p>المهنــة</p>
+              <select 
+                name="ProfessionId"
+                value={filters.ProfessionId}
+                onChange={handleFilterChange}
+              >
+                {professions?.map(prof => (
+                  <option key={prof.id} value={prof.id}>{prof.name}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className='select-div'>
+              <p>المــنطقــة</p>
+              <select 
+                name="Location"
+                value={filters.Location}
+                onChange={handleFilterChange}
+              >
+                {locations.map(loc => (
+                  <option key={loc.value} value={loc.value}>{loc.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className='select-div'>
+              <p>الــتقــييم</p>
+              <select 
+                name="MinRating"
+                value={filters.MinRating}
+                onChange={handleFilterChange}
+              >
+                {ratings.map(rating => (
+                  <option key={rating.value} value={rating.value}>{rating.label}</option>
+                ))}
+              </select>
+            </div>
+            
+            <div className='select-div'>
+              <p>الـهــويـة</p>
+              <select 
+                name="IsTrusted"
+                value={filters.IsTrusted}
+                onChange={handleFilterChange}
+              >
+                {trustOptions.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <section>
+        {loading ? (
+          <div className="loading">جاري التحميل...</div>
+        ) : (
+          <div className="frame-280 grid grid-cols-1 md:grid-cols-4">
+            { craftsmen?.data?.map(craftsman => (
+              <div key={craftsman.id} className="frame-28">
+                <div className="menu-list-plus">
+                  <div className="img-profile">
+                    <img src={craftsman.imageUrl || "/images/Ellipse 6.svg"} alt={craftsman.name} />
+                  </div>
+                  
+                  <div className="profile-name">
+                    <div><span>{craftsman.name}</span></div>
+                    {craftsman.isTrusted && <div><img src="/images/verify.svg" alt="verified" /></div>}
+                  </div>
+                  
+                  <div className="work"><span>{craftsman.profession}</span></div>
+                  
+                  <div className="location">
+                    <div><img src="/images/Location.svg" alt="location" /></div>
+                    <div><span>{craftsman.location}</span></div>
+                  </div>
+                  
+                  <div className="line0">
+                    <div className="line0"></div>
+                  </div>
+                  
+                  <div className="rating-div">
+                    <div className="ratimg-text">
+                      <span>الــتقــييم</span>
+                    </div>
+                    <div className="riting">
+                      {renderStars(craftsman.rating)}
+                    </div>
+                  </div>
+                  
+                  <div className="more-det">
+                    <Link       href={`/craftsman/${craftsman.id}`}
+                    >عرض التفاصيل</Link>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
+      
+      {/* Pagination controls would go here */}
+    </div>
+  );
+};
+
+export default page;
