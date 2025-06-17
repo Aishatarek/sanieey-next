@@ -10,7 +10,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@react-oauth/google": "^0.12.1",
+    "@react-oauth/google": "^0.12.2",
     "daisyui": "^5.0.19",
     "next": "^15.3.0",
     "react": "^19.0.0",
