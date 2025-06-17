@@ -8,9 +8,22 @@ interface Profession {
   name: string;
 }
 
-const RecommendCraftsmanPage = () => {
+interface FormData {
+  CraftsmanFirstName: string;
+  CraftsmanLastName: string;
+  Governorate: string;
+  Location: string;
+  PhoneNumber: string;
+  ProfessionId: string;
+  PreviousWorkDescription: string;
+  DateTheProjectDone: string;
+  PersonalPhoto: File | null;
+  PreviousWorkPictures: File[];
+}
+
+const page = () => {
   // State for form data
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     CraftsmanFirstName: '',
     CraftsmanLastName: '',
     Governorate: '',
@@ -19,8 +32,8 @@ const RecommendCraftsmanPage = () => {
     ProfessionId: '',
     PreviousWorkDescription: '',
     DateTheProjectDone: '',
-    PersonalPhoto: null as File | null,
-    PreviousWorkPictures: [] as File[]
+    PersonalPhoto: null,
+    PreviousWorkPictures: []
   });
 
   const [professions, setProfessions] = useState<Profession[]>([]);
@@ -127,8 +140,8 @@ const RecommendCraftsmanPage = () => {
       data.append('PersonalPhoto', formData.PersonalPhoto);
     }
     
-    formData.PreviousWorkPictures.forEach((file, index) => {
-      data.append(`PreviousWorkPictures`, file);
+    formData.PreviousWorkPictures.forEach((file) => {
+      data.append('PreviousWorkPictures', file);
     });
 
     try {
@@ -147,7 +160,7 @@ const RecommendCraftsmanPage = () => {
         throw new Error(errorData.message || 'حدث خطأ أثناء الإرسال');
       }
 
-      const result = await response.json();
+      await response.json();
       
       Swal.fire({
         icon: 'success',
@@ -169,11 +182,18 @@ const RecommendCraftsmanPage = () => {
         PreviousWorkPictures: []
       });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
+      let errorMessage = 'حدث خطأ أثناء إرسال البيانات';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      }
+      
       Swal.fire({
         icon: 'error',
         title: 'خطأ',
-        text: error.message || 'حدث خطأ أثناء إرسال البيانات',
+        text: errorMessage,
       });
     }
   };
@@ -426,4 +446,4 @@ const RecommendCraftsmanPage = () => {
   );
 };
 
-export default RecommendCraftsmanPage;
+export default page;

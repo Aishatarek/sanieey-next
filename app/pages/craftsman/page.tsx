@@ -3,21 +3,48 @@
 import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
+
+interface Craftsman {
+  id: string;
+  fullName: string;
+  profession: string;
+  location: string;
+  averageRating: number;
+  profileImage?: string;
+  identityVerified?: boolean;
+}
+
+interface PreviousWork {
+  id: string;
+  description?: string;
+  date?: string;
+  images?: string[];
+}
+
+interface Rating {
+  id: string;
+  rating: number;
+  comment: string;
+  reviewerName: string;
+  reviewerImage?: string;
+  date: string;
+}
 
 const page = () => {
-
-      const router = useRouter()
-      const searchParams = useSearchParams()
-      const id = searchParams.get('id')
-  const [activeTab, setActiveTab] = useState('work');
-  const [craftsman, setCraftsman] = useState(null);
-  const [previousWorks, setPreviousWorks] = useState([]);
-  const [ratings, setRatings] = useState([]);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+  
+  const [activeTab, setActiveTab] = useState<'work' | 'reviews'>('work');
+  const [craftsman, setCraftsman] = useState<Craftsman | null>(null);
+  const [previousWorks, setPreviousWorks] = useState<PreviousWork[]>([]);
+  const [ratings, setRatings] = useState<Rating[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ratingValue, setRatingValue] = useState(0);
   const [reviewText, setReviewText] = useState('');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [loading, setLoading] = useState({
     craftsman: true,
@@ -26,7 +53,7 @@ const page = () => {
   });
 
   // API base URL
-  const API_BASE_URL = 'http://sani3ywebapiv1.runasp.net/api/User';
+  const API_BASE_URL = 'https://sani3ywebapiv1.runasp.net/api/User';
 
   // Fetch craftsman details
   useEffect(() => {
@@ -101,19 +128,17 @@ const page = () => {
   const handleRatingSubmit = async () => {
     try {
       const formData = new FormData();
-      formData.append('CraftsmanFirstName', craftsman.fullName.split(' ')[0] || '');
-      formData.append('CraftsmanLastName', craftsman.fullName.split(' ')[1] || '');
-      formData.append('Governorate', craftsman.location.split('-')[1]?.trim() || 'الجيزة');
-      formData.append('Location', craftsman.location.split('-')[0]?.trim() || 'مدينة 6 اكتوبر');
-      formData.append('PhoneNumber', '01000000000'); // Should be from user input
-      formData.append('ProfessionId', 1); // Should map profession to ID
+      if (craftsman) {
+        formData.append('CraftsmanFirstName', craftsman.fullName.split(' ')[0] || '');
+        formData.append('CraftsmanLastName', craftsman.fullName.split(' ')[1] || '');
+        formData.append('Governorate', craftsman.location.split('-')[1]?.trim() || 'الجيزة');
+        formData.append('Location', craftsman.location.split('-')[0]?.trim() || 'مدينة 6 اكتوبر');
+      }
+      formData.append('PhoneNumber', '01000000000');
+      formData.append('ProfessionId', '1');
       formData.append('PreviousWorkDescription', reviewText);
       formData.append('DateTheProjectDone', new Date().toISOString());
       
-      // For file uploads (uncomment when ready)
-      // formData.append('PersonalPhoto', selectedFile);
-      // formData.append('PreviousWorkPictures', selectedFilesArray);
-
       const response = await fetch(`${API_BASE_URL}/recommendCraftsman`, {
         method: 'POST',
         body: formData,
@@ -134,11 +159,11 @@ const page = () => {
     }
   };
 
-  const updateImage = (image) => {
+  const updateImage = (image: string) => {
     setSelectedImage(image);
   };
 
-  const openFullscreen = (image) => {
+  const openFullscreen = (image: string) => {
     setSelectedImage(image);
     setIsFullscreen(true);
   };
@@ -290,7 +315,7 @@ const page = () => {
                           src={selectedImage || work.images?.[0] || '/placeholder-work.jpg'} 
                           alt="Previous Work" 
                           className="w-full h-64 object-cover rounded-lg cursor-pointer"
-                          onClick={() => openFullscreen(selectedImage || work.images?.[0])}
+                          // onClick={() => openFullscreen(selectedImage || work.images?.[0])}
                         />
                         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 text-sm">
                           تفاصيل الصورة هنا
@@ -503,7 +528,6 @@ const page = () => {
               <textarea
                 placeholder="أخبرنا كيف كانت تجربك لتساعد الناس في معرفة أداء الصنايعي"
                 className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                rows="3"
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
               ></textarea>
@@ -534,11 +558,13 @@ const page = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
-          <img 
-            src={selectedImage} 
-            alt="Fullscreen" 
-            className="max-w-full max-h-full object-contain"
-          />
+          {selectedImage && (
+  <img 
+    src={selectedImage} 
+    alt="Fullscreen" 
+    className="max-w-full max-h-full object-contain"
+  />
+)}
         </div>
       )}
     </div>

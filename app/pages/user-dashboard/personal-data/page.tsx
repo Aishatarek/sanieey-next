@@ -3,22 +3,42 @@ import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Swal from 'sweetalert2'
 
-const Page = () => {
-  const [userData, setUserData] = useState({
+interface UserData {
+  firstName: string
+  lastName: string
+  email: string
+  phoneNumber: string
+}
+
+interface PasswordData {
+  currentPassword: string
+  newPassword: string
+  confirmPassword: string
+}
+
+interface FormErrors {
+  FirstName?: string[]
+  LastName?: string[]
+  Email?: string[]
+  PhoneNumber?: string[]
+  [key: string]: string[] | undefined
+}
+
+const page = () => {
+  const [userData, setUserData] = useState<UserData>({
     firstName: '',
     lastName: '',
     email: '',
     phoneNumber: ''
   })
-  const [currentProfileImage, setCurrentProfileImage] = useState('')
-  const [profileImage, setProfileImage] = useState(null)
+  const [profileImage, setProfileImage] = useState<File | null>(null)
   const [profileImagePath, setProfileImagePath] = useState('/images/Ellipse 6.svg')
-  const fileInputRef = useRef(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [loading, setLoading] = useState(true)
   const [editMode, setEditMode] = useState(false)
-  const [errors, setErrors] = useState({})
+  const [errors, setErrors] = useState<FormErrors>({})
 
-  const [passwordData, setPasswordData] = useState({
+  const [passwordData, setPasswordData] = useState<PasswordData>({
     currentPassword: '',
     newPassword: '',
     confirmPassword: ''
@@ -47,10 +67,9 @@ const Page = () => {
           email: data.email || '',
           phoneNumber: data.phoneNumber || ''
         })
-        localStorage.setItem("userData", JSON.stringify(data));
+        localStorage.setItem("userData", JSON.stringify(data))
 
         if (data.profileImagePath) {
-          setCurrentProfileImage(data.profileImagePath)
           setProfileImagePath("https://sani3ywebapiv1.runasp.net/"+data.profileImagePath)
         }
       } else {
@@ -69,7 +88,7 @@ const Page = () => {
     }
   }
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setUserData(prev => ({
       ...prev,
@@ -77,7 +96,7 @@ const Page = () => {
     }))
   }
 
-  const handleImageChange = (e) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0]
       setProfileImage(file)
@@ -85,7 +104,7 @@ const Page = () => {
     }
   }
 
-  const handlePasswordChange = (e) => {
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setPasswordData(prev => ({
       ...prev,
@@ -93,7 +112,7 @@ const Page = () => {
     }))
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setErrors({})
@@ -105,15 +124,7 @@ const Page = () => {
       formData.append('Email', userData.email)
       formData.append('PhoneNumber', userData.phoneNumber)
       
-    //   if (!profileImage && currentProfileImage) {
-    //     // إرسال الصورة الحالية إذا لم يتم تغييرها
-    //     const response = await fetch(currentProfileImage)
-    //     const blob = await response.blob()
-    //     const file = new File([blob], 'profile.jpg', { type: blob.type })
-    //     formData.append('ProfileImage', file)
-    //   } else 
-    // 
-    if (profileImage) {
+      if (profileImage) {
         formData.append('ProfileImage', profileImage)
       }
 
@@ -136,7 +147,6 @@ const Page = () => {
         })
         setEditMode(false)
         await fetchUserData()
-
       } else {
         if (data.errors) {
           setErrors(data.errors)
@@ -155,7 +165,7 @@ const Page = () => {
       console.error('Error updating profile:', error)
       Swal.fire({
         title: 'خطأ!',
-        text: error.message || 'فشل تحديث الملف الشخصي',
+        text: error instanceof Error ? error.message : 'فشل تحديث الملف الشخصي',
         icon: 'error',
         confirmButtonText: 'حسناً'
       })
@@ -164,7 +174,7 @@ const Page = () => {
     }
   }
 
-  const handlePasswordSubmit = async (e) => {
+  const handlePasswordSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setPasswordLoading(true)
 
@@ -213,7 +223,7 @@ const Page = () => {
       console.error('Error changing password:', error)
       Swal.fire({
         title: 'خطأ!',
-        text: error.message,
+        text: error instanceof Error ? error.message : 'حدث خطأ غير متوقع',
         icon: 'error',
         confirmButtonText: 'حسناً'
       })
@@ -225,253 +235,258 @@ const Page = () => {
   if (loading && !userData.firstName) {
     return <div className="p-4">جاري التحميل...</div>
   }
-console.log();
 
   return (
     <>
-        <div className="container m-auto">
-
-      <div className="nam"><span>الـمــلـف الـشخـصـي </span> <img src="/images/Fill 177.svg" alt="" /></div>
-      
-      <div className="flex flex-wrap gap-4 p-4">
-        <div className="w-full md:w-3/12">
-          <div className='personal-container'>
-            <div className='personal-main'>
-              <img src={profileImagePath} alt="Profile" className="w-20 h-20 rounded-full object-cover" />
+      <div className="container m-auto">
+        <div className="nam"><span>الـمــلـف الـشخـصـي </span> <img src="/images/Fill 177.svg" alt="" /></div>
+        
+        <div className="flex flex-wrap gap-4 p-4">
+          <div className="w-full md:w-3/12">
+            <div className='personal-container'>
+              <div className='personal-main'>
+                <img 
+                  src={profileImagePath} 
+                  alt="Profile" 
+                  className="w-20 h-20 rounded-full object-cover" 
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/images/Ellipse 6.svg'
+                  }}
+                />
+                <div>
+                  <h5>{userData.firstName} {userData.lastName}</h5>
+                  <p>{userData.email}</p>
+                </div>
+              </div>
               <div>
-                <h5>{userData.firstName} {userData.lastName}</h5>
-                <p>{userData.email}</p>
+                <ul className="personal-menu">
+                  <li><Link href="/user-dashboard/personal-data" className='active'> 
+                    <img src="/images/profile-circle.svg" alt="" />
+                    <span> البيانات الشخصية </span>
+                  </Link></li>
+                  <li><Link href="/user-dashboard/orders">  
+                    <img src="/images/calendar-tick.svg" alt="" />
+                    <span> الطـلـبـات </span>
+                  </Link></li>
+                  <li><Link href="/user-dashboard/reviews"> 
+                    <img src="/images/archive-minus.svg" alt="" />
+                    <span> التقــيـيـمات  </span>
+                  </Link></li>
+                  <li><Link href="/user-dashboard/recommend"> 
+                    <img src="/images/Group 8.svg" alt="" />
+                    <span> الصنايعية المرشحين </span> 
+                  </Link></li>
+                </ul>
               </div>
             </div>
-            <div>
-              <ul className="personal-menu">
-                <li><Link href="/user-dashboard/personal-data" className='active'> 
-                  <img src="/images/profile-circle.svg" alt="" />
-                  <span> البيانات الشخصية </span>
-                </Link></li>
-                <li><Link href="/user-dashboard/orders">  
-                  <img src="/images/calendar-tick.svg" alt="" />
-                  <span> الطـلـبـات </span>
-                </Link></li>
-                <li><Link href="/user-dashboard/reviews"> 
-                  <img src="/images/archive-minus.svg" alt="" />
-                  <span> التقــيـيـمات  </span>
-                </Link></li>
-                <li><Link href="/user-dashboard/recommend"> 
-                  <img src="/images/Group 8.svg" alt="" />
-                  <span> الصنايعية المرشحين </span> 
-                </Link></li>
-              </ul>
-            </div>
           </div>
-        </div>
-        
-        <div className="w-full md:w-8/12">
-          <div className='orders-box'>
-            <div className="tabs tabs-box">
-              <input type="radio" name="my_tabs_6" id="tab1" className="tab personal_tab_1" aria-label="بيــانــات الــحــسـاب" defaultChecked />
-              <div className="tab-content bg-base-100 border-base-300 p-6">
-                <form onSubmit={handleSubmit}>
-                  <div className='edit-image'>
-                    <label htmlFor='image-file'>
-                      <img src={profileImagePath} alt="Profile" className='personal-image w-20 h-20 rounded-full object-cover' />
-                      {editMode && <img src="/images/Frame 331.svg" alt="" className='change-image' />}
-                    </label>
-                    {editMode && (
-                      <input 
-                        type="file" 
-                        id='image-file' 
-                        ref={fileInputRef}
-                        style={{display: 'none'}} 
-                        onChange={handleImageChange}
-                        accept="image/*"
-                      />
-                    )}
-                  </div>
-                  
-                  <div className="flex gap-7">
-                    <div className="pers-input-div">
-                      <label htmlFor="firstName">الاسم الاول</label>
-                      <div className="pers-div">
-                        <img src="/images/user.svg" alt="" />
+          
+          <div className="w-full md:w-8/12">
+            <div className='orders-box'>
+              <div className="tabs tabs-box">
+                <input type="radio" name="my_tabs_6" id="tab1" className="tab personal_tab_1" aria-label="بيــانــات الــحــسـاب" defaultChecked />
+                <div className="tab-content bg-base-100 border-base-300 p-6">
+                  <form onSubmit={handleSubmit}>
+                    <div className='edit-image'>
+                      <label htmlFor='image-file'>
+                        <img src={profileImagePath} alt="Profile" className='personal-image w-20 h-20 rounded-full object-cover' />
+                        {editMode && <img src="/images/Frame 331.svg" alt="" className='change-image' />}
+                      </label>
+                      {editMode && (
                         <input 
-                          className={`name ${errors.FirstName ? 'border-red-500' : ''}`} 
-                          type="text" 
-                          id="firstName" 
-                          name="firstName"
-                          placeholder="الاسم الاول" 
-                          value={userData.firstName} 
-                          onChange={handleInputChange}
-                          readOnly={!editMode}
+                          type="file" 
+                          id='image-file' 
+                          ref={fileInputRef}
+                          style={{display: 'none'}} 
+                          onChange={handleImageChange}
+                          accept="image/*"
                         />
-                      </div>
-                      {errors.FirstName && <span className="text-red-500 text-sm">{errors.FirstName[0]}</span>}
+                      )}
                     </div>
-                    <div className="pers-input-div">
-                      <label htmlFor="lastName">الاسم الأخير</label>
-                      <div className="pers-div">
-                        <img src="/images/user.svg" alt="" />
-                        <input 
-                          className={`name ${errors.LastName ? 'border-red-500' : ''}`} 
-                          type="text" 
-                          id="lastName" 
-                          name="lastName"
-                          placeholder="الاسم الأخير" 
-                          value={userData.lastName} 
-                          onChange={handleInputChange}
-                          readOnly={!editMode}
-                        />
-                      </div>
-                      {errors.LastName && <span className="text-red-500 text-sm">{errors.LastName[0]}</span>}
-                    </div>
-                  </div>
-                  
-                  <div className="flex gap-7 mt-7">
-                    <div className="pers-input-div">
-                      <label htmlFor="email">البريد الإلكتروني</label>
-                      <div className="pers-div">
-                        <img src="/images/user.svg" alt="" />
-                        <input 
-                          className={`name ${errors.Email ? 'border-red-500' : ''}`} 
-                          type="email" 
-                          id="email" 
-                          name="email"
-                          placeholder="البريد الإلكتروني" 
-                          value={userData.email} 
-                          onChange={handleInputChange}
-                          readOnly={!editMode}
-                        />
-                      </div>
-                      {errors.Email && <span className="text-red-500 text-sm">{errors.Email[0]}</span>}
-                    </div>
-                    <div className="pers-input-div">
-                      <div className="xz">
-                        <label htmlFor="phoneNumber">رقم الهاتف</label>
-                        <div className={`phone-input ${errors.PhoneNumber ? 'border-red-500' : ''}`}>
-                          <span>+20 <img src="/images/Egypt (EG).svg" alt="" /></span>
+                    
+                    <div className="flex gap-7">
+                      <div className="pers-input-div">
+                        <label htmlFor="firstName">الاسم الاول</label>
+                        <div className="pers-div">
+                          <img src="/images/user.svg" alt="" />
                           <input 
-                            type="tel" 
-                            id="phoneNumber" 
-                            name="phoneNumber"
-                            placeholder="رقم الهاتف" 
-                            value={userData.phoneNumber} 
+                            className={`name ${errors.FirstName ? 'border-red-500' : ''}`} 
+                            type="text" 
+                            id="firstName" 
+                            name="firstName"
+                            placeholder="الاسم الاول" 
+                            value={userData.firstName} 
                             onChange={handleInputChange}
                             readOnly={!editMode}
                           />
                         </div>
-                        {errors.PhoneNumber && (
-                          <span className="text-red-500 text-sm">{errors.PhoneNumber[0]}</span>
-                        )}
+                        {errors.FirstName && <span className="text-red-500 text-sm">{errors.FirstName[0]}</span>}
+                      </div>
+                      <div className="pers-input-div">
+                        <label htmlFor="lastName">الاسم الأخير</label>
+                        <div className="pers-div">
+                          <img src="/images/user.svg" alt="" />
+                          <input 
+                            className={`name ${errors.LastName ? 'border-red-500' : ''}`} 
+                            type="text" 
+                            id="lastName" 
+                            name="lastName"
+                            placeholder="الاسم الأخير" 
+                            value={userData.lastName} 
+                            onChange={handleInputChange}
+                            readOnly={!editMode}
+                          />
+                        </div>
+                        {errors.LastName && <span className="text-red-500 text-sm">{errors.LastName[0]}</span>}
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex justify-end mt-6">
-                    {!editMode ? (
-                      <button 
-                        type="button" 
-                        className="btn btn-primary"
-                        onClick={() => setEditMode(true)}
-                      >
-                        تعديل البيانات
-                      </button>
-                    ) : (
-                      <div className="flex gap-2">
+                    
+                    <div className="flex gap-7 mt-7">
+                      <div className="pers-input-div">
+                        <label htmlFor="email">البريد الإلكتروني</label>
+                        <div className="pers-div">
+                          <img src="/images/user.svg" alt="" />
+                          <input 
+                            className={`name ${errors.Email ? 'border-red-500' : ''}`} 
+                            type="email" 
+                            id="email" 
+                            name="email"
+                            placeholder="البريد الإلكتروني" 
+                            value={userData.email} 
+                            onChange={handleInputChange}
+                            readOnly={!editMode}
+                          />
+                        </div>
+                        {errors.Email && <span className="text-red-500 text-sm">{errors.Email[0]}</span>}
+                      </div>
+                      <div className="pers-input-div">
+                        <div className="xz">
+                          <label htmlFor="phoneNumber">رقم الهاتف</label>
+                          <div className={`phone-input ${errors.PhoneNumber ? 'border-red-500' : ''}`}>
+                            <span>+20 <img src="/images/Egypt (EG).svg" alt="" /></span>
+                            <input 
+                              type="tel" 
+                              id="phoneNumber" 
+                              name="phoneNumber"
+                              placeholder="رقم الهاتف" 
+                              value={userData.phoneNumber} 
+                              onChange={handleInputChange}
+                              readOnly={!editMode}
+                            />
+                          </div>
+                          {errors.PhoneNumber && (
+                            <span className="text-red-500 text-sm">{errors.PhoneNumber[0]}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex justify-end mt-6">
+                      {!editMode ? (
                         <button 
                           type="button" 
-                          className="btn btn-ghost"
-                          onClick={() => {
-                            setEditMode(false)
-                            setErrors({})
-                            fetchUserData()
-                          }}
-                        >
-                          إلغاء
-                        </button>
-                        <button 
-                          type="submit" 
                           className="btn btn-primary"
-                          disabled={loading}
+                          onClick={() => setEditMode(true)}
                         >
-                          {loading ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+                          تعديل البيانات
                         </button>
+                      ) : (
+                        <div className="flex gap-2">
+                          <button 
+                            type="button" 
+                            className="btn btn-ghost"
+                            onClick={() => {
+                              setEditMode(false)
+                              setErrors({})
+                              fetchUserData()
+                            }}
+                          >
+                            إلغاء
+                          </button>
+                          <button 
+                            type="submit" 
+                            className="btn btn-primary"
+                            disabled={loading}
+                          >
+                            {loading ? 'جاري الحفظ...' : 'حفظ التغييرات'}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </form>
+                </div>
+
+                <input type="radio" name="my_tabs_6" id="tab2" className="tab personal_tab_2" aria-label="أمــان الحــسـاب" />
+                <div className="tab-content bg-base-100 border-base-300 p-6">
+                  <form onSubmit={handlePasswordSubmit}>
+                    <div className="pers-input-div mt-5">
+                      <label htmlFor="currentPassword">كلمة المرور الحالية</label>
+                      <div className="pers-div">
+                        <img src="/images/lock.svg" alt="" />
+                        <input 
+                          className="name" 
+                          type="password" 
+                          id="currentPassword"
+                          name="currentPassword"
+                          placeholder="كلمة المرور الحالية" 
+                          value={passwordData.currentPassword}
+                          onChange={handlePasswordChange}
+                          required
+                        />
                       </div>
-                    )}
-                  </div>
-                </form>
-              </div>
+                    </div>
+                    <div className="pers-input-div mt-5">
+                      <label htmlFor="newPassword">كلمة المرور الجديدة</label>
+                      <div className="pers-div">
+                        <img src="/images/lock.svg" alt="" />
+                        <input 
+                          className="name" 
+                          type="password" 
+                          id="newPassword"
+                          name="newPassword"
+                          placeholder="كلمة المرور الجديدة" 
+                          value={passwordData.newPassword}
+                          onChange={handlePasswordChange}
+                          required
+                          minLength={6}
+                        />
+                      </div>
+                    </div>
+                    <div className="pers-input-div mt-5">
+                      <label htmlFor="confirmPassword">تأكيد كلمة المرور الجديدة</label>
+                      <div className="pers-div">
+                        <img src="/images/lock.svg" alt="" />
+                        <input 
+                          className="name" 
+                          type="password" 
+                          id="confirmPassword"
+                          name="confirmPassword"
+                          placeholder="تأكيد كلمة المرور الجديدة" 
+                          value={passwordData.confirmPassword}
+                          onChange={handlePasswordChange}
+                          required
+                        />
+                      </div>
+                    </div>
 
-              <input type="radio" name="my_tabs_6" id="tab2" className="tab personal_tab_2" aria-label="أمــان الحــسـاب" />
-              <div className="tab-content bg-base-100 border-base-300 p-6">
-                <form onSubmit={handlePasswordSubmit}>
-                  <div className="pers-input-div mt-5">
-                    <label htmlFor="currentPassword">كلمة المرور الحالية</label>
-                    <div className="pers-div">
-                      <img src="/images/lock.svg" alt="" />
-                      <input 
-                        className="name" 
-                        type="password" 
-                        id="currentPassword"
-                        name="currentPassword"
-                        placeholder="كلمة المرور الحالية" 
-                        value={passwordData.currentPassword}
-                        onChange={handlePasswordChange}
-                        required
-                      />
+                    <div className="flex justify-end mt-6">
+                      <button 
+                        type="submit" 
+                        className="btn btn-primary"
+                        disabled={passwordLoading}
+                      >
+                        {passwordLoading ? 'جاري التحديث...' : 'تغيير كلمة المرور'}
+                      </button>
                     </div>
-                  </div>
-                  <div className="pers-input-div mt-5">
-                    <label htmlFor="newPassword">كلمة المرور الجديدة</label>
-                    <div className="pers-div">
-                      <img src="/images/lock.svg" alt="" />
-                      <input 
-                        className="name" 
-                        type="password" 
-                        id="newPassword"
-                        name="newPassword"
-                        placeholder="كلمة المرور الجديدة" 
-                        value={passwordData.newPassword}
-                        onChange={handlePasswordChange}
-                        required
-                        minLength={6}
-                      />
-                    </div>
-                  </div>
-                  <div className="pers-input-div mt-5">
-                    <label htmlFor="confirmPassword">تأكيد كلمة المرور الجديدة</label>
-                    <div className="pers-div">
-                      <img src="/images/lock.svg" alt="" />
-                      <input 
-                        className="name" 
-                        type="password" 
-                        id="confirmPassword"
-                        name="confirmPassword"
-                        placeholder="تأكيد كلمة المرور الجديدة" 
-                        value={passwordData.confirmPassword}
-                        onChange={handlePasswordChange}
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-end mt-6">
-                    <button 
-                      type="submit" 
-                      className="btn btn-primary"
-                      disabled={passwordLoading}
-                    >
-                      {passwordLoading ? 'جاري التحديث...' : 'تغيير كلمة المرور'}
-                    </button>
-                  </div>
-                </form>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   )
 }
 
-export default Page
+export default page

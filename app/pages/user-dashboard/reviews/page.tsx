@@ -2,10 +2,17 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 
+interface Rating {
+  craftsmanFullName: string;
+  createdAt: string;
+  stars: number;
+  description: string;
+}
+
 const page = () => {
-  const [ratings, setRatings] = useState([]);
+  const [ratings, setRatings] = useState<Rating[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchRatings = async () => {
@@ -37,13 +44,13 @@ const page = () => {
     fetchRatings();
   }, []);
 
-  const formatDate = (dateString) => {
+  const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    const options = { year: "numeric", month: "long", day: "numeric" };
+    const options: Intl.DateTimeFormatOptions = { year: "numeric", month: "long", day: "numeric" };
     return date.toLocaleDateString("ar-EG", options);
   };
 
-  const renderStars = (rating) => {
+  const renderStars = (rating: number) => {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
@@ -89,111 +96,120 @@ const page = () => {
 
   return (
     <>
-        <div className="container m-auto">
-
-      <div className="nam">
-        <span>الـمــلـف الـشخـصـي </span>
-        <img src="/images/Fill 177.svg" alt="" />
-      </div>
-      <div className="flex flex-wrap gap-4 p-4">
-        <div className="w-full md:w-3/12">
-          <div className="personal-container">
-          <div className='personal-main'>
-              <img src={"https://sani3ywebapiv1.runasp.net"+JSON.parse(localStorage.getItem("userData"))?.profileImagePath} alt="Profile" className="w-20 h-20 rounded-full object-cover" />
+      <div className="container m-auto">
+        <div className="nam">
+          <span>الـمــلـف الـشخـصـي </span>
+          <img src="/images/Fill 177.svg" alt="" />
+        </div>
+        <div className="flex flex-wrap gap-4 p-4">
+          <div className="w-full md:w-3/12">
+            <div className="personal-container">
+              <div className='personal-main'>
+                <img 
+                  src={"https://sani3ywebapiv1.runasp.net"+JSON.parse(localStorage.getItem("userData") || '{}')?.profileImagePath} 
+                  alt="Profile" 
+                  className="w-20 h-20 rounded-full object-cover" 
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/images/default-profile.png';
+                  }}
+                />
+                <div>
+                  <h5>
+                    {JSON.parse(localStorage.getItem("userData") || '{}')?.firstName} 
+                    {JSON.parse(localStorage.getItem("userData") || '{}')?.lastName}
+                  </h5>
+                  <p>{JSON.parse(localStorage.getItem("userData") || '{}')?.email}</p>
+                </div>
+              </div>
               <div>
-                <h5>{JSON.parse(localStorage.getItem("userData"))?.firstName} {JSON.parse(localStorage.getItem("userData"))?.lastName}</h5>
-                <p>{JSON.parse(localStorage.getItem("userData"))?.email}</p>
+                <ul className="personal-menu">
+                  <li>
+                    <Link href="/user-dashboard/personal-data">
+                      <img src="/images/profile-circle.svg" alt="" />
+                      <span> البيانات الشخصية </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/user-dashboard/orders">
+                      <img src="/images/calendar-tick.svg" alt="" />
+                      <span> الطـلـبـات </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/user-dashboard/reviews" className="active">
+                      <img src="/images/archive-minus.svg" alt="" />
+                      <span> التقــيـيـمات </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/user-dashboard/recommend">
+                      <img src="/images/Group 8.svg" alt="" />
+                      <span> الصنايعية المرشحين </span>
+                    </Link>
+                  </li>
+                </ul>
               </div>
             </div>
-            <div>
-              <ul className="personal-menu">
-                <li>
-                  <Link href="/user-dashboard/personal-data">
-                    <img src="/images/profile-circle.svg" alt="" />
-                    <span> البيانات الشخصية </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/user-dashboard/orders">
-                    <img src="/images/calendar-tick.svg" alt="" />
-                    <span> الطـلـبـات </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/user-dashboard/reviews" className="active">
-                    <img src="/images/archive-minus.svg" alt="" />
-                    <span> التقــيـيـمات </span>
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/user-dashboard/recommend">
-                    <img src="/images/Group 8.svg" alt="" />
-                    <span> الصنايعية المرشحين </span>
-                  </Link>
-                </li>
-              </ul>
-            </div>
           </div>
-        </div>
-        <div className="w-full md:w-8/12">
-          <div className="orders-box">
-            <div className="nam">
-              <span>التقــيـيـمات</span>
-              <img src="/images/Fill 177.svg" alt="" />
-            </div>
+          <div className="w-full md:w-8/12">
+            <div className="orders-box">
+              <div className="nam">
+                <span>التقــيـيـمات</span>
+                <img src="/images/Fill 177.svg" alt="" />
+              </div>
 
-            {ratings.length === 0 ? (
-              <div className="text-center py-10">
-                <p className="text-lg">لا توجد تقييمات متاحة</p>
-              </div>
-            ) : (
-              <div className="m-auto">
-                {ratings.map((rating, index) => (
-                  <React.Fragment key={index}>
-                    <div className="rating-com">
-                      <div className="com-1">
-                        <div>
-                          <img src="/images/Frame 165.png" alt="" />
-                        </div>
-                        <div>
+              {ratings.length === 0 ? (
+                <div className="text-center py-10">
+                  <p className="text-lg">لا توجد تقييمات متاحة</p>
+                </div>
+              ) : (
+                <div className="m-auto">
+                  {ratings.map((rating, index) => (
+                    <React.Fragment key={index}>
+                      <div className="rating-com">
+                        <div className="com-1">
                           <div>
-                            <span className="com-1-0">
-                              {rating.craftsmanFullName}
-                            </span>
+                            <img src="/images/Frame 165.png" alt="" />
                           </div>
                           <div>
-                            <span className="com-1-1">
-                              {formatDate(rating.createdAt)}
-                            </span>
+                            <div>
+                              <span className="com-1-0">
+                                {rating.craftsmanFullName}
+                              </span>
+                            </div>
+                            <div>
+                              <span className="com-1-1">
+                                {formatDate(rating.createdAt)}
+                              </span>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                      <div className="com-2">
+                        <div className="com-2">
+                          <div>
+                            <span className="com-1-0">التقييم</span>
+                          </div>
+                          <div className="com-1-2">
+                            {renderStars(rating.stars)}
+                          </div>
+                        </div>
                         <div>
-                          <span className="com-1-0">التقييم</span>
+                          <p className="com-1-3">
+                            &quot;{rating.description}&quot;
+                          </p>
                         </div>
-                        <div className="com-1-2">
-                          {renderStars(rating.stars)}
+                      </div>
+                      {index < ratings.length - 1 && (
+                        <div className="linex">
+                          <div></div>
                         </div>
-                      </div>
-                      <div>
-                        <p className="com-1-3">
-                          &quot;{rating.description}&quot;
-                        </p>
-                      </div>
-                    </div>
-                    {index < ratings.length - 1 && (
-                      <div className="linex">
-                        <div></div>
-                      </div>
-                    )}
-                  </React.Fragment>
-                ))}
-              </div>
-            )}
+                      )}
+                    </React.Fragment>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
       </div>
     </>
   );

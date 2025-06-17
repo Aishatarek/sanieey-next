@@ -2,20 +2,28 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import "react-phone-input-2/lib/style.css";
+
+interface FormData {
+  name: string;
+  email: string;
+  phoneNumber: string;
+  messageContent: string;
+}
+
 const page = () => {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phoneNumber: "",
     messageContent: "",
   });
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     const authToken = localStorage.getItem("authToken");
     console.log(authToken);
 
@@ -57,10 +65,12 @@ const page = () => {
       } else {
         Swal.fire("خطأ", data.message || "حدث خطأ في الإرسال", "error");
       }
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Error submitting form:", error);
       Swal.fire("خطأ", "حدث خطأ في الاتصال بالخادم", "error");
     }
   };
+
   return (
     <div>
       <div className="contact-1">
