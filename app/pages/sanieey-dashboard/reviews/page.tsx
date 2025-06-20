@@ -61,7 +61,43 @@ const Page = () => {
         const date = new Date(dateString);
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
         return date.toLocaleDateString('ar-EG', options);
-    };
+    };  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
+
+      const response = await fetch(
+        "https://sani3ywebapiv1.runasp.net/api/UserAuth/logout",
+        {
+          method: "POST",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        // Clear local storage and state regardless of API response
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+
+        // Optional: Redirect to home page or login page
+        window.location.href = "/";
+      } else {
+        console.error("Logout failed:", response.status);
+        // Even if API fails, clear local session
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Ensure local session is cleared even if there's an error
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userData");
+      window.location.href = "/";
+    }
+  };
 
     return (
         <div className='container m-auto mt-1.5'>
@@ -129,6 +165,12 @@ const Page = () => {
                                         البيانات الشخصية
                                     </li>
                                 </Link>
+                                <li>
+                    <button onClick={handleLogout} className="btn0 text-right">
+                      <img src="/images/nav/Logout.svg" alt="" />
+                      <span style={{ color: "#FF0000" }}>تسجــيل خــروج</span>
+                    </button>
+                  </li>
                             </ul>
                         </div>
                     </div>
@@ -144,20 +186,20 @@ const Page = () => {
                         <div className="m-auto">
                             {loading ? (
                                 <p className="text-center py-8">جاري تحميل التقييمات...</p>
-                            ) : ratingsData?.ratings?.length > 0 ? (
-                                ratingsData.ratings.map((rating, index) => (
+                            ) : ratingsData?.length > 0 ? (
+                                ratingsData?.map((rating, index) => (
                                     <React.Fragment key={index}>
                                         <div className="rating-com">
                                             <div className="com-1">
                                                 <div>
-                                                    <img src="/images/Frame 165.png" alt={rating.fullName} />
+                                                    <img src="/images/Frame 165.png" alt={rating.userFullName} />
                                                 </div>
                                                 <div>
                                                     <div>
-                                                        <span className="com-1-0">{rating.fullName}</span>
+                                                        <span className="com-1-0">{rating.userFullName}</span>
                                                     </div>
                                                     <div>
-                                                        <span className="com-1-1">{formatDate(rating.dateOfRate)}</span>
+                                                        <span className="com-1-1">{formatDate(rating.createdAt)}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -166,14 +208,14 @@ const Page = () => {
                                                     <span className="com-1-0">التقييم</span>
                                                 </div>
                                                 <div className="com-1-2">
-                                                    {renderStars(rating.ratingByStars)}
+                                                    {renderStars(rating.ratingValue)}
                                                 </div>
                                             </div>
                                             <div>
                                                 <p className="com-1-3">"{rating.ratingDescription}"</p>
                                             </div>
                                         </div>
-                                        {index < ratingsData.ratings.length - 1 && (
+                                        {index < ratingsData.length - 1 && (
                                             <div className="linex"><div></div></div>
                                         )}
                                     </React.Fragment>

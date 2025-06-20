@@ -63,16 +63,15 @@ const page = () => {
             const result = await response.json()
 
             if (response.ok) {
+                localStorage.setItem('authToken', result.accessToken);
+                localStorage.setItem('role', result.role);
                 Swal.fire({
                     title: 'تم إنشاء الحساب بنجاح!',
                     icon: 'success',
                     confirmButtonText: 'OK'
                 }).then(() => {
-                    
-                    localStorage.setItem('authToken', result.token);
-                    window.location.href = '/';
+                    window.location.href = "/sanieey-dashboard/main-dashboard";
                 });
-
             } else if (result.errors) {
                 setErrors(result.errors)
                 const errorMessages = Object.entries(result.errors)
@@ -100,6 +99,7 @@ const page = () => {
             })
         }
     }
+    
     return (
         <>
             <div className="sign-div flex gap-7">

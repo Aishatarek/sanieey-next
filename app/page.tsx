@@ -301,7 +301,7 @@ export default function Home() {
                     </div>
                   </div>
                   <div className="more-det">
-                    <Link href={`/craftsman/${craftsman.userId}`}>عرض التفاصيل</Link>
+                    <Link  href={`/craftsman?id=${craftsman.userId}`}>عرض التفاصيل</Link>
                   </div>
                 </div>
               </div>

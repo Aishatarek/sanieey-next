@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Notifications from "./Notifications";
+import { usePathname } from "next/navigation";
 
 function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -9,6 +10,8 @@ function Navbar() {
   const [isUserLogged, setIsUserLogged] = useState(null);
   const [userData, setUserData] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const pathname = usePathname();
+  
 
   const fetchUserProfile = async (token) => {
     try {
@@ -116,7 +119,9 @@ function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownOpen]);
-
+  if (localStorage.getItem("role") == "Craftsman") {
+    return null;
+  }
   return (
     <nav
       className={`${

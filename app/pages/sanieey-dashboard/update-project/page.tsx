@@ -209,7 +209,43 @@ const page = () => {
             </div>
         )
     }
-
+    const handleLogout = async () => {
+        try {
+          const token = localStorage.getItem("authToken");
+    
+          const response = await fetch(
+            "https://sani3ywebapiv1.runasp.net/api/UserAuth/logout",
+            {
+              method: "POST",
+              headers: {
+                accept: "*/*",
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+    
+          if (response.ok) {
+            // Clear local storage and state regardless of API response
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userData");
+    
+            // Optional: Redirect to home page or login page
+            window.location.href = "/";
+          } else {
+            console.error("Logout failed:", response.status);
+            // Even if API fails, clear local session
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("userData");
+            window.location.href = "/";
+          }
+        } catch (error) {
+          console.error("Error during logout:", error);
+          // Ensure local session is cleared even if there's an error
+          localStorage.removeItem("authToken");
+          localStorage.removeItem("userData");
+          window.location.href = "/";
+        }
+      };
     return (
         <div className='container m-auto mt-1.5'>
 
@@ -277,6 +313,12 @@ const page = () => {
                                         البيانات الشخصية
                                     </li>
                                 </Link>
+                                <li>
+                    <button onClick={handleLogout} className="btn0 text-right">
+                      <img src="/images/nav/Logout.svg" alt="" />
+                      <span style={{ color: "#FF0000" }}>تسجــيل خــروج</span>
+                    </button>
+                  </li>
                             </ul>
                         </div>
                     </div>

@@ -1,574 +1,1083 @@
-'use client';
+"use client";
+import React, { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import Swal from "sweetalert2";
 
-import { useState, useEffect } from 'react';
-import Head from 'next/head';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Image from 'next/image';
-
-interface Craftsman {
-  id: string;
+interface CraftsmanCard {
+  profilePicture: string;
   fullName: string;
   profession: string;
+  governorate: string;
   location: string;
   averageRating: number;
-  profileImage?: string;
-  identityVerified?: boolean;
 }
 
 interface PreviousWork {
-  id: string;
-  description?: string;
-  date?: string;
-  images?: string[];
+  projectDescription: string;
+  dateProjectDone: string;
+  projectPictures: string[];
 }
 
 interface Rating {
-  id: string;
-  rating: number;
-  comment: string;
-  reviewerName: string;
-  reviewerImage?: string;
-  date: string;
+  profilePicture: string;
+  fullName: string;
+  dateOfRate: string;
+  ratingByStars: number;
+  ratingDescription: string;
 }
 
-const page = () => {
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const id = searchParams.get('id');
-  
-  const [activeTab, setActiveTab] = useState<'work' | 'reviews'>('work');
-  const [craftsman, setCraftsman] = useState<Craftsman | null>(null);
+interface RatingDistribution {
+  stars: number;
+  percentage: number;
+}
+
+interface RatingsResponse {
+  averageRating: number;
+  ratingDistribution: RatingDistribution[];
+  ratings: Rating[];
+}
+
+interface ServiceRequestForm {
+  CraftsmanId: string;
+  ServiceDescription: string;
+  Address: string;
+  StartDate: string;
+  PhoneNumber: string;
+  SecondPhoneNumber: string;
+  ImageFile: File | null;
+}
+
+function Page() {
+  const [craftsmanId, setCraftsmanId] = useState<string>("");
+  const [craftsmanData, setCraftsmanData] = useState<CraftsmanCard | null>(null);
   const [previousWorks, setPreviousWorks] = useState<PreviousWork[]>([]);
-  const [ratings, setRatings] = useState<Rating[]>([]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [ratingValue, setRatingValue] = useState(0);
-  const [reviewText, setReviewText] = useState('');
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [ratingsData, setRatingsData] = useState<RatingsResponse | null>(null);
   const [loading, setLoading] = useState({
-    craftsman: true,
+    card: true,
     works: true,
-    ratings: true
+    ratings: true,
   });
+  const [error, setError] = useState({
+    card: "",
+    works: "",
+    ratings: "",
+  });
+  const [activeTab, setActiveTab] = useState("work");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModal2Open, setIsModal2Open] = useState(false);
+  const [currentImage, setCurrentImage] = useState("");
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [requestForm, setRequestForm] = useState<ServiceRequestForm>({
+    CraftsmanId: "",
+    ServiceDescription: "",
+    Address: "",
+    StartDate: "",
+    PhoneNumber: "",
+    SecondPhoneNumber: "",
+    ImageFile: null,
+  });
+  const [requestSuccess, setRequestSuccess] = useState(false);
 
-  // API base URL
-  const API_BASE_URL = 'https://sani3ywebapiv1.runasp.net/api/User';
-
-  // Fetch craftsman details
+  // Get craftsman ID from URL
   useEffect(() => {
-    if (id) {
-      const fetchCraftsman = async () => {
-        try {
-          console.log(`Fetching craftsman with ID: ${id}`);
-          const response = await fetch(`${API_BASE_URL}/Get/craftsmenList?id=${id}`);
-          console.log('Response status:', response.status);
-          
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          
-          const data = await response.json();
-          console.log('Received data:', data);
-          
-          if (data.data && data.data.length > 0) {
-            setCraftsman(data.data[0]);
-          } else {
-            console.warn('No craftsman data received');
-          }
-          setLoading(prev => ({...prev, craftsman: false}));
-        } catch (error) {
-          console.error('Error fetching craftsman:', error);
-          setLoading(prev => ({...prev, craftsman: false}));
-        }
-      };
-  
-      fetchCraftsman();
+    if (typeof window !== "undefined") {
+      const url = new URL(window.location.href);
+      const id = url.searchParams.get("id");
+      if (id) {
+        setCraftsmanId(id);
+        setRequestForm((prev) => ({ ...prev, CraftsmanId: id }));
+      }
     }
-  }, [id]);
+  }, []);
+
+  // Fetch craftsman data
+  useEffect(() => {
+    if (!craftsmanId) return;
+
+    const fetchCraftsmanData = async () => {
+      try {
+        const response = await fetch(
+          `https://sani3ywebapiv1.runasp.net/api/User/craftsman-card/${craftsmanId}`,
+          {
+            headers: {
+              accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
+            },
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch craftsman data");
+
+        const data = await response.json();
+        setCraftsmanData(data);
+        setLoading((prev) => ({ ...prev, card: false }));
+      } catch (err) {
+        setError((prev) => ({
+          ...prev,
+          card: err instanceof Error ? err.message : "Unknown error",
+        }));
+        setLoading((prev) => ({ ...prev, card: false }));
+      }
+    };
+
+    fetchCraftsmanData();
+  }, [craftsmanId]);
 
   // Fetch previous works
   useEffect(() => {
-    if (id) {
-      const fetchPreviousWorks = async () => {
-        try {
-          const response = await fetch(`${API_BASE_URL}/craftsman/${id}/previous-works`);
-          const data = await response.json();
-          setPreviousWorks(data);
-          setLoading(prev => ({...prev, works: false}));
-        } catch (error) {
-          console.error('Error fetching previous works:', error);
-          setLoading(prev => ({...prev, works: false}));
-        }
-      };
+    if (!craftsmanId) return;
 
-      fetchPreviousWorks();
-    }
-  }, [id]);
+    const fetchPreviousWorks = async () => {
+      try {
+        const response = await fetch(
+          `https://sani3ywebapiv1.runasp.net/api/User/craftsman/${craftsmanId}/previous-works`,
+          {
+            headers: {
+              accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
+            },
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch previous works");
+
+        const data = await response.json();
+        setPreviousWorks(data);
+        if (data.length > 0 && data[0].projectPictures.length > 0) {
+          setCurrentImage(data[0].projectPictures[0]);
+        }
+        setLoading((prev) => ({ ...prev, works: false }));
+      } catch (err) {
+        setError((prev) => ({
+          ...prev,
+          works: err instanceof Error ? err.message : "Unknown error",
+        }));
+        setLoading((prev) => ({ ...prev, works: false }));
+      }
+    };
+
+    fetchPreviousWorks();
+  }, [craftsmanId]);
 
   // Fetch ratings
   useEffect(() => {
-    if (id) {
-      const fetchRatings = async () => {
-        try {
-          const response = await fetch(`${API_BASE_URL}/${id}/ratings`);
-          const data = await response.json();
-          setRatings(data);
-          setLoading(prev => ({...prev, ratings: false}));
-        } catch (error) {
-          console.error('Error fetching ratings:', error);
-          setLoading(prev => ({...prev, ratings: false}));
-        }
-      };
+    if (!craftsmanId) return;
 
-      fetchRatings();
+    const fetchRatings = async () => {
+      try {
+        const response = await fetch(
+          `https://sani3ywebapiv1.runasp.net/api/User/${craftsmanId}/ratings`,
+          {
+            headers: {
+              accept: "*/*",
+              Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
+            },
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to fetch ratings");
+
+        const data = await response.json();
+        setRatingsData(data);
+        setLoading((prev) => ({ ...prev, ratings: false }));
+      } catch (err) {
+        setError((prev) => ({
+          ...prev,
+          ratings: err instanceof Error ? err.message : "Unknown error",
+        }));
+        setLoading((prev) => ({ ...prev, ratings: false }));
+      }
+    };
+
+    fetchRatings();
+  }, [craftsmanId]);
+
+  const showPage = (page: string, event: React.MouseEvent<HTMLButtonElement>) => {
+    setActiveTab(page);
+    const buttons = document.querySelectorAll(".button-1, .button-2");
+    buttons.forEach((btn) => {
+      btn.classList.remove("active");
+      btn.classList.add("inactive");
+    });
+    event.currentTarget.classList.remove("inactive");
+    event.currentTarget.classList.add("active");
+  };
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const openModal2 = () => setIsModal2Open(true);
+  const closeModal2 = () => setIsModal2Open(false);
+  const openFullscreen = () => setIsFullscreen(true);
+  const closeFullscreen = () => setIsFullscreen(false);
+
+  const updateImage = (imgSrc: string) => {
+    setCurrentImage(imgSrc);
+  };
+
+  const handleRequestFormChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setRequestForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setRequestForm((prev) => ({ ...prev, ImageFile: e.target.files![0] }));
     }
-  }, [id]);
+  };
 
-  const handleRatingSubmit = async () => {
+  const submitServiceRequest = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !requestForm.ServiceDescription ||
+      !requestForm.Address ||
+      !requestForm.StartDate ||
+      !requestForm.PhoneNumber
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "الرجاء ملء جميع الحقول المطلوبة",
+      });
+      return;
+    }
+
+    if (!/^01[0125][0-9]{8}$/.test(requestForm.PhoneNumber)) {
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: "رقم الهاتف غير صحيح. يجب أن يبدأ بـ 010 أو 011 أو 012 أو 015 ويتكون من 11 رقمًا",
+      });
+      return;
+    }
+
     try {
       const formData = new FormData();
-      if (craftsman) {
-        formData.append('CraftsmanFirstName', craftsman.fullName.split(' ')[0] || '');
-        formData.append('CraftsmanLastName', craftsman.fullName.split(' ')[1] || '');
-        formData.append('Governorate', craftsman.location.split('-')[1]?.trim() || 'الجيزة');
-        formData.append('Location', craftsman.location.split('-')[0]?.trim() || 'مدينة 6 اكتوبر');
+      formData.append("CraftsmanId", requestForm.CraftsmanId);
+      formData.append("ServiceDescription", requestForm.ServiceDescription);
+      formData.append("Address", requestForm.Address);
+      formData.append("StartDate", requestForm.StartDate);
+      formData.append("PhoneNumber", requestForm.PhoneNumber);
+      if (requestForm.SecondPhoneNumber) {
+        formData.append("SecondPhoneNumber", requestForm.SecondPhoneNumber);
       }
-      formData.append('PhoneNumber', '01000000000');
-      formData.append('ProfessionId', '1');
-      formData.append('PreviousWorkDescription', reviewText);
-      formData.append('DateTheProjectDone', new Date().toISOString());
-      
-      const response = await fetch(`${API_BASE_URL}/recommendCraftsman`, {
-        method: 'POST',
-        body: formData,
+      if (requestForm.ImageFile) {
+        formData.append("ImageFile", requestForm.ImageFile);
+      }
+
+      const response = await fetch(
+        "https://sani3ywebapiv1.runasp.net/api/ServiceRequest/new-request",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
+          },
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "حدث خطأ أثناء الإرسال");
+      }
+
+      await response.json();
+
+      Swal.fire({
+        icon: "success",
+        title: "تم بنجاح",
+        text: "تم إرسال طلبك بنجاح! سيتواصل معك الصنايعي قريبًا لتأكيد التفاصيل.",
       });
-      
-      if (response.ok) {
-        setIsModalOpen(false);
-        setRatingValue(0);
-        setReviewText('');
-        
-        // Refresh ratings
-        const ratingsResponse = await fetch(`${API_BASE_URL}/${id}/ratings`);
-        const ratingsData = await ratingsResponse.json();
-        setRatings(ratingsData);
+
+      setRequestSuccess(true);
+      setRequestForm({
+        CraftsmanId: craftsmanId,
+        ServiceDescription: "",
+        Address: "",
+        StartDate: "",
+        PhoneNumber: "",
+        SecondPhoneNumber: "",
+        ImageFile: null,
+      });
+    } catch (err: unknown) {
+      let errorMessage = "حدث خطأ أثناء إرسال البيانات";
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === "string") {
+        errorMessage = err;
       }
-    } catch (error) {
-      console.error('Error submitting rating:', error);
+
+      Swal.fire({
+        icon: "error",
+        title: "خطأ",
+        text: errorMessage,
+      });
     }
   };
 
-  const updateImage = (image: string) => {
-    setSelectedImage(image);
+  const renderStars = (rating: number) => {
+    const stars = [];
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 >= 0.5;
+
+    for (let i = 1; i <= 5; i++) {
+      if (i <= fullStars) {
+        stars.push(
+          <img
+            key={`full-${i}`}
+            src="/images/Starf.svg"
+            alt="filled star"
+            width={20}
+            height={20}
+          />
+        );
+      } else if (i === fullStars + 1 && hasHalfStar) {
+        stars.push(
+          <img
+            key={`half-${i}`}
+            src="/images/StarHalf.svg"
+            alt="half star"
+            width={20}
+            height={20}
+          />
+        );
+      } else {
+        stars.push(
+          <img
+            key={`empty-${i}`}
+            src="/images/Star.svg"
+            alt="empty star"
+            width={20}
+            height={20}
+          />
+        );
+      }
+    }
+
+    return <div className="flex">{stars}</div>;
   };
 
-  const openFullscreen = (image: string) => {
-    setSelectedImage(image);
-    setIsFullscreen(true);
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ar-EG", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
   };
-
-  const closeFullscreen = () => {
-    setIsFullscreen(false);
-  };
-
-  if (loading.craftsman) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  if (!craftsman) {
-    return (
-      <div className="flex flex-col justify-center items-center h-screen">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-        </svg>
-        <p className="mt-4 text-xl font-medium text-gray-700">لم يتم العثور على الصنايعي</p>
-        <Link href="/" className="mt-4 text-blue-600 hover:underline">
-          العودة للصفحة الرئيسية
-        </Link>
-      </div>
-    );
-  }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <Head>
-        <title>تفاصيل الصنايعي | {craftsman.fullName}</title>
-        <meta name="description" content={`صفحة تفاصيل الصنايعي ${craftsman.fullName}`} />
-      </Head>
+    <div className="works0">
+      <div className="det">
+        <span>
+          تفاصيل الصنايعي
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 48 48"
+            fill="none"
+          >
+            <path
+              fillRule="evenodd"
+              clipRule="evenodd"
+              d="M42 21.9997H17.322C19.764 19.5557 21.32 16.2277 21.32 12.6797V10.6797H17.32V12.6797C17.32 17.5577 12.876 21.9997 8 21.9997H6V25.9997H8C12.876 25.9997 17.32 30.4417 17.32 35.3197V37.3197H21.32V35.3197C21.32 31.7717 19.764 28.4437 17.322 25.9997H42V21.9997Z"
+              fill="#141522"
+            />
+          </svg>
+        </span>
+      </div>
 
-      <div className="container mx-auto px-4 py-8">
-        {/* Header with back button */}
-        <div className="flex items-center justify-between mb-8">
-          <Link href="/" className="flex items-center text-blue-600 hover:text-blue-800">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            العودة
-          </Link>
-          
-          <h1 className="text-2xl font-bold text-gray-800 flex items-center">
-            تفاصيل الصنايعي
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none" className="mr-2">
-              <path fillRule="evenodd" clipRule="evenodd" d="M42 21.9997H17.322C19.764 19.5557 21.32 16.2277 21.32 12.6797V10.6797H17.32V12.6797C17.32 17.5577 12.876 21.9997 8 21.9997H6V25.9997H8C12.876 25.9997 17.32 30.4417 17.32 35.3197V37.3197H21.32V35.3197C21.32 31.7717 19.764 28.4437 17.322 25.9997H42V21.9997Z" fill="#141522"/>
-            </svg>
-          </h1>
-        </div>
-
-        {/* Craftsman Profile */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <div className="flex flex-col md:flex-row items-center">
-            <div className="w-24 h-24 rounded-full overflow-hidden mb-4 md:mb-0 md:mr-6 bg-gray-200 flex items-center justify-center">
-              {craftsman.profileImage ? (
-                <img src={craftsman.profileImage} alt={craftsman.fullName} className="w-full h-full object-cover" />
-              ) : (
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              )}
-            </div>
-            
-            <div className="text-center md:text-right flex-1">
-              <div className="flex items-center justify-center md:justify-end">
-                <h2 className="text-xl font-bold text-gray-800">{craftsman.fullName}</h2>
-                {craftsman.identityVerified && (
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-2 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+      {showRequestForm ? (
+        <div className="det-0">
+          <div className="det-1">
+            <div className="menu-list-plus">
+              {loading.card ? (
+                <div className="flex justify-center py-4">
+                  <span className="loading loading-spinner loading-lg"></span>
+                </div>
+              ) : error.card ? (
+                <div className="alert alert-error">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
-                )}
-              </div>
-              
-              <p className="text-gray-600 mt-1">{craftsman.profession}</p>
-              
-              <div className="flex items-center justify-center md:justify-end mt-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-                <span className="text-gray-600">{craftsman.location}</span>
-              </div>
-              
-              <div className="h-px bg-gray-200 my-4"></div>
-              
-              <div className="flex items-center justify-center md:justify-between">
-                <span className="text-gray-800">التقييم</span>
-                <div className="flex items-center mr-4">
-                  {[...Array(5)].map((_, i) => (
-                    <svg 
-                      key={i} 
-                      className={`w-4 h-4 mx-0.5 ${i < Math.floor(craftsman.averageRating) ? 'text-yellow-400' : 'text-gray-300'}`} 
-                      fill="currentColor" 
-                      viewBox="0 0 20 20"
+                  <span>{error.card}</span>
+                </div>
+              ) : craftsmanData ? (
+                <>
+                  <div className="img-profile">
+                    <img
+                      src={`https://sani3ywebapiv1.runasp.net${craftsmanData.profilePicture}`}
+                      alt={craftsmanData.fullName}
+                      width={80}
+                      height={80}
+                      className="rounded-full object-cover"
+                    />
+                  </div>
+                  <div className="profile-name">
+                    <div>
+                      <span>{craftsmanData.fullName}</span>
+                    </div>
+                    <div>
+                      <img
+                        src="/images/verify.svg"
+                        alt="Verified"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                  </div>
+                  <div className="work">
+                    <span>{craftsmanData.profession}</span>
+                  </div>
+                  <div className="location">
+                    <div>
+                      <img
+                        src="/images/Location.svg"
+                        alt="Location"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    <div>
+                      <span>
+                        {craftsmanData.location} - {craftsmanData.governorate}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="line0">
+                    <div className="line0"></div>
+                  </div>
+                  <div className="riting">
+                    <div>
+                      <span>الــتقــييم</span>
+                    </div>
+                    {renderStars(craftsmanData.averageRating)}
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+          <div className="det-2">
+            <div className="container-det">
+              <div className=" inset-0 bg-white z-50 overflow-y-auto">
+                <div className="py-8 px-4">
+                  <div className="flex justify-between items-center mb-6">
+                  <div className="btn-ruq1">
+                  <button
+                    className="btn-ruq"
+                      onClick={() => {
+                        setShowRequestForm(false);
+                        setRequestSuccess(false);
+                      }}
                     >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              
-              <button 
-                className="mt-6 bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 transition"
-                onClick={() => router.push(`/request-craftsman/${id}`)}
-              >
-                طلب الصنايعي
-              </button>
-            </div>
-          </div>
-        </div>
+                      رجوع
+                    </button>
+                    </div>
+                  </div>
 
-        {/* Tabs */}
-        <div className="mb-6">
-          <div className="flex border-b border-gray-200">
-            <button
-              className={`py-2 px-4 font-medium ${activeTab === 'work' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-              onClick={() => setActiveTab('work')}
-            >
-              الأعمال السابقة
-            </button>
-            <button
-              className={`py-2 px-4 font-medium ${activeTab === 'reviews' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
-              onClick={() => setActiveTab('reviews')}
-            >
-              التقييمات
-            </button>
-          </div>
-        </div>
-
-        {/* Tab Content */}
-        {activeTab === 'work' ? (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            {loading.works ? (
-              <div className="flex justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : previousWorks.length > 0 ? (
-              previousWorks.map((work, index) => (
-                <div key={work.id} className={index !== 0 ? 'mt-8 pt-8 border-t border-gray-200' : ''}>
-                  <div className="flex flex-col md:flex-row">
-                    <div className="md:w-1/2 mb-6 md:mb-0 md:pr-6">
-                      <div className="relative">
-                        <img 
-                          src={selectedImage || work.images?.[0] || '/placeholder-work.jpg'} 
-                          alt="Previous Work" 
-                          className="w-full h-64 object-cover rounded-lg cursor-pointer"
-                          // onClick={() => openFullscreen(selectedImage || work.images?.[0])}
-                        />
-                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white p-2 text-sm">
-                          تفاصيل الصورة هنا
-                        </div>
+                  {requestSuccess ? (
+                    <div className="text-center py-10">
+                      <div className="text-green-500 mb-6">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-24 w-24 mx-auto"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
                       </div>
-                      
-                      {work.images && work.images.length > 0 && (
-                        <div className="mt-4 overflow-x-auto">
-                          <div className="flex space-x-2">
-                            {work.images.map((image, idx) => (
-                              <img 
-                                key={idx} 
-                                src={image} 
-                                alt={`Work ${idx + 1}`} 
-                                className="w-16 h-16 object-cover rounded cursor-pointer"
-                                onClick={() => updateImage(image)}
-                              />
-                            ))}
-                          </div>
-                        </div>
-                      )}
+                      <p className="text-2xl font-semibold mb-4">
+                        تم إرسال طلبك بنجاح!
+                      </p>
+                      <p className="text-lg mb-6">
+                        سيتواصل معك الصنايعي قريبًا لتأكيد التفاصيل.
+                      </p>
+                      <button
+                        onClick={() => setShowRequestForm(false)}
+                        className="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark text-lg"
+                      >
+                        العودة إلى صفحة الصنايعي
+                      </button>
                     </div>
-                    
-                    <div className="md:w-1/2">
-                      <h3 className="text-lg font-bold text-gray-800 mb-2">وصف المشروع</h3>
-                      <p className="text-gray-600 mb-4">{work.description || 'لا يوجد وصف متاح'}</p>
-                      
-                      {work.date && (
-                        <div className="text-gray-800">
-                          <span className="font-medium">تاريخ إنجاز المشروع: </span>
-                          <span>{work.date}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-gray-600 text-center py-8">لا توجد أعمال سابقة متاحة</p>
-            )}
-            
-            <div className="mt-8 text-center">
-              <button 
-                className="bg-blue-600 text-white py-2 px-8 rounded-md hover:bg-blue-700 transition"
-                onClick={() => router.push(`/request-craftsman/${id}`)}
-              >
-                طلب الصنايعي
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="bg-white rounded-lg shadow-md p-6">
-            {loading.ratings ? (
-              <div className="flex justify-center py-8">
-                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-              </div>
-            ) : (
-              <>
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
-                  <div className="w-full md:w-1/2 mb-6 md:mb-0">
-                    {[5, 4, 3, 2, 1].map((star) => {
-                      const percentage = ratings.reduce((acc, rating) => {
-                        return rating.rating === star ? acc + 1 : acc;
-                      }, 0) / ratings.length * 100 || 0;
-                      
-                      return (
-                        <div key={star} className="flex items-center justify-between mb-2">
-                          <span className="text-gray-600 w-10">{Math.round(percentage)}%</span>
-                          <div className="w-3/4 h-2 bg-gray-200 rounded-full overflow-hidden">
-                            <div 
-                              className="h-full bg-yellow-400" 
-                              style={{ width: `${percentage}%` }}
-                            ></div>
-                          </div>
-                          <span className="text-gray-600 w-6">{star}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  
-                  <div className="w-full md:w-1/2 flex flex-col items-center md:items-end">
-                    <div className="mb-2">
-                      <svg className="w-6 h-6 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    </div>
-                    <span className="text-2xl font-bold">
-                      {craftsman.averageRating.toFixed(1)}
-                    </span>
-                  </div>
-                </div>
-                
-                <button 
-                  className="w-full bg-yellow-500 text-white py-3 rounded-md hover:bg-yellow-600 transition mb-8"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  قيّم الصنايعي الآن!
-                </button>
-                
-                {ratings.length > 0 ? (
-                  ratings.map((rating, index) => (
-                    <div key={rating.id} className={index !== 0 ? 'mt-6 pt-6 border-t border-gray-200' : ''}>
-                      <div className="flex items-start mb-4">
-                        <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-                          {rating.reviewerImage ? (
-                            <img src={rating.reviewerImage} alt={rating.reviewerName} className="w-full h-full object-cover" />
-                          ) : (
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                          )}
-                        </div>
-                        <div className="mr-4">
-                          <div className="flex items-center">
-                            <span className="font-bold text-gray-800">{rating.reviewerName}</span>
-                            <span className="text-gray-500 text-sm mr-4">{rating.date}</span>
-                          </div>
-                          
-                          <div className="flex items-center mt-1">
-                            <span className="text-gray-800 text-sm mr-2">التقييم:</span>
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <svg 
-                                  key={i} 
-                                  className={`w-4 h-4 mx-0.5 ${i < rating.rating ? 'text-yellow-400' : 'text-gray-300'}`} 
-                                  fill="currentColor" 
-                                  viewBox="0 0 20 20"
+                  ) : (
+                    <form onSubmit={submitServiceRequest}>
+                      <section className="sec-trash">
+                        <div className="flex gap-7 mt-5 new-flex">
+                          <div className="w-full">
+                            <div className="seccm">
+                              <h2 className="data-tarsh">
+                                بيانات الخدمة المطلوبة:
+                              </h2>
+
+                              <div className="g mt-5">
+                                <div className="req-n200">
+                                  <textarea
+                                    placeholder="وصف الخدمة المطلوبة بالتفصيل"
+                                    name="ServiceDescription"
+                                    value={requestForm.ServiceDescription}
+                                    onChange={handleRequestFormChange}
+                                    required
+                                  />
+                                  <label>وصف الخدمة المطلوبة</label>
+                                </div>
+                              </div>
+
+                              <div className="flex gap-7 mt-5 new-flex">
+                                <div className="w-full md:w-6/12">
+                                  <div className="input-date">
+                                    <input
+                                      type="date"
+                                      name="StartDate"
+                                      value={requestForm.StartDate}
+                                      onChange={handleRequestFormChange}
+                                      required
+                                    />
+                                    <label>تاريخ البدء المطلوب</label>
+                                  </div>
+                                </div>
+                                <div className="w-full md:w-6/12">
+                                  <div className="xz">
+                                    <label htmlFor="PhoneNumber">
+                                      رقم الهاتف
+                                    </label>
+                                    <div className="phone-input">
+                                      <span>
+                                        +20{" "}
+                                        <img
+                                          src="/images/Egypt (EG).svg"
+                                          alt=""
+                                        />
+                                      </span>
+                                      <input
+                                        type="tel"
+                                        name="PhoneNumber"
+                                        id="PhoneNumber"
+                                        value={requestForm.PhoneNumber}
+                                        onChange={handleRequestFormChange}
+                                        placeholder="01018819950"
+                                        required
+                                      />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="flex gap-7 mt-5 new-flex">
+                                <div className="w-full md:w-6/12 name-0">
+                                  <label htmlFor="Address">العنوان</label>
+                                  <div className="name-1">
+                                    <img src="/images/Location.svg" alt="" />
+                                    <input
+                                      type="text"
+                                      className="name"
+                                      id="Address"
+                                      name="Address"
+                                      value={requestForm.Address}
+                                      onChange={handleRequestFormChange}
+                                      placeholder="ادخل العنوان بالتفصيل"
+                                      required
+                                    />
+                                  </div>
+                                </div>
+                                <div className="w-full md:w-6/12 name-0">
+                                  <label htmlFor="SecondPhoneNumber">
+                                    رقم هاتف آخر (اختياري)
+                                  </label>
+                                  <div className="name-1">
+                                    <img src="/images/Phone.svg" alt="" />
+                                    <input
+                                      type="tel"
+                                      className="name"
+                                      id="SecondPhoneNumber"
+                                      name="SecondPhoneNumber"
+                                      value={requestForm.SecondPhoneNumber}
+                                      onChange={handleRequestFormChange}
+                                      placeholder="01018819950"
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="g mt-5">
+                                <label
+                                  className="upload-container"
+                                  htmlFor="ImageFile"
                                 >
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </svg>
-                              ))}
+                                  <div className="p-cc">
+                                    <img
+                                      src="/images/Image 2.svg"
+                                      alt="Upload Icon"
+                                    />
+                                  </div>
+                                  <div className="upload-text">
+                                    {requestForm.ImageFile
+                                      ? requestForm.ImageFile.name
+                                      : "اضغط هنا لتحميل صورة للخدمة المطلوبة (اختياري)"}
+                                  </div>
+                                  <div className="upload-info">
+                                    صيغة JPG و PNG فقط - الحد الأقصى (5
+                                    ميجابايت)
+                                  </div>
+                                  <input
+                                    type="file"
+                                    id="ImageFile"
+                                    name="ImageFile"
+                                    accept="image/png, image/jpeg"
+                                    onChange={handleFileChange}
+                                  />
+                                </label>
+                              </div>
                             </div>
                           </div>
                         </div>
+                      </section>
+
+                      <div className="btn-sendd my-8">
+                        <button type="submit">
+                          <img src="/images/ArrowLeft.svg" alt="" />
+                          <span>إرســــــال الطلب</span>
+                        </button>
                       </div>
-                      
-                      <p className="text-gray-600">{rating.comment}</p>
+                    </form>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="det-0">
+          <div className="det-1">
+            <div className="menu-list-plus">
+              {loading.card ? (
+                <div className="flex justify-center py-4">
+                  <span className="loading loading-spinner loading-lg"></span>
+                </div>
+              ) : error.card ? (
+                <div className="alert alert-error">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="stroke-current shrink-0 h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <span>{error.card}</span>
+                </div>
+              ) : craftsmanData ? (
+                <>
+                  <div className="img-profile">
+                    <img
+                      src={`https://sani3ywebapiv1.runasp.net${craftsmanData.profilePicture}`}
+                      alt={craftsmanData.fullName}
+                      width={80}
+                      height={80}
+                      className="rounded-full object-cover"
+                    />
+                  </div>
+                  <div className="profile-name">
+                    <div>
+                      <span>{craftsmanData.fullName}</span>
                     </div>
-                  ))
+                    <div>
+                      <img
+                        src="/images/verify.svg"
+                        alt="Verified"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                  </div>
+                  <div className="work">
+                    <span>{craftsmanData.profession}</span>
+                  </div>
+                  <div className="location">
+                    <div>
+                      <img
+                        src="/images/Location.svg"
+                        alt="Location"
+                        width={20}
+                        height={20}
+                      />
+                    </div>
+                    <div>
+                      <span>
+                        {craftsmanData.location} - {craftsmanData.governorate}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="line0">
+                    <div className="line0"></div>
+                  </div>
+                  <div className="riting">
+                    <div>
+                      <span>الــتقــييم</span>
+                    </div>
+                    {renderStars(craftsmanData.averageRating)}
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
+
+          <div className="det-2">
+            <div className="container-det">
+              <div className="buttons">
+                <button
+                  id="workBtn"
+                  className={`button-1 ${
+                    activeTab === "work" ? "active" : "inactive"
+                  }`}
+                  onClick={(e) => showPage("work", e)}
+                >
+                  الأعمال السابقة
+                </button>
+                <button
+                  id="reviewsBtn"
+                  className={`button-2 ${
+                    activeTab === "reviews" ? "active" : "inactive"
+                  }`}
+                  onClick={(e) => showPage("reviews", e)}
+                >
+                  التقييمات
+                </button>
+              </div>
+
+              {/* Previous Works Tab */}
+              <div
+                id="work"
+                className="content"
+                style={{ display: activeTab === "work" ? "block" : "none" }}
+              >
+                {loading.works ? (
+                  <div className="flex justify-center py-10">
+                    <span className="loading loading-spinner loading-lg"></span>
+                  </div>
+                ) : error.works ? (
+                  <div className="alert alert-error">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="stroke-current shrink-0 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>{error.works}</span>
+                  </div>
+                ) : previousWorks.length === 0 ? (
+                  <div className="text-center py-10">
+                    <p>لا توجد أعمال سابقة متاحة</p>
+                  </div>
                 ) : (
-                  <p className="text-gray-600 text-center py-8">لا توجد تقييمات متاحة</p>
+                  previousWorks.map((work, index) => (
+                    <React.Fragment key={index}>
+                      <div className="flex-det">
+                        <div className="wrapper-01">
+                          <div className="bord">
+                            <div className="content0">
+                              <div className="wrapper">
+                                {work.projectPictures.length > 0 && (
+                                  <>
+                                    <div
+                                      className="df"
+                                      style={{ position: "relative" }}
+                                    >
+                                      <img
+                                        className="featured-image"
+                                        src={`https://sani3ywebapiv1.runasp.net${work.projectPictures[0]}`}
+                                        alt="صورة المشروع"
+                                        width={500}
+                                        height={300}
+                                        onClick={openFullscreen}
+                                      />
+                                    </div>
+
+                                    <div className="floating-scroll">
+                                      <div className="thumbnail-gallery">
+                                        {work.projectPictures.map(
+                                          (img, imgIndex) => (
+                                            <img
+                                              key={imgIndex}
+                                              src={`https://sani3ywebapiv1.runasp.net${img}`}
+                                              alt={`صورة ${imgIndex + 1}`}
+                                              width={100}
+                                              height={60}
+                                              onClick={() =>
+                                                updateImage(
+                                                  `https://sani3ywebapiv1.runasp.net${img}`
+                                                )
+                                              }
+                                            />
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+                                  </>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="wrapper-0">
+                          <div className="det-10">
+                            <span className="span-det0">وصف المشروع</span>
+                            <span className="span-det">
+                              {work.projectDescription}
+                            </span>
+                          </div>
+                          <div className="data-det">
+                            <span>
+                              تاريـخ انـجــاز الـمـشــروع:{" "}
+                              {formatDate(work.dateProjectDone)}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {index < previousWorks.length - 1 && (
+                        <div className="linc">
+                          <div></div>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  ))
                 )}
-                
-                <div className="mt-8 text-center">
-                  <button 
-                    className="bg-blue-600 text-white py-2 px-8 rounded-md hover:bg-blue-700 transition"
-                    onClick={() => router.push(`/request-craftsman/${id}`)}
+
+                <div className="btn-ruq1">
+                  <button
+                    className="btn-ruq"
+                    onClick={() => setShowRequestForm(true)}
                   >
                     طلب الصنايعي
                   </button>
                 </div>
-              </>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* Rating Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div 
-            className="absolute inset-0 bg-black bg-opacity-50"
-            onClick={() => setIsModalOpen(false)}
-          ></div>
-          
-          <div className="bg-white rounded-lg p-6 z-10 w-full max-w-md">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center">
-                <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 flex items-center justify-center">
-                  {craftsman.profileImage ? (
-                    <img src={craftsman.profileImage} alt={craftsman.fullName} className="w-full h-full object-cover" />
-                  ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  )}
-                </div>
-                <span className="font-bold mr-4">{craftsman.fullName}</span>
               </div>
-              <button 
-                onClick={() => setIsModalOpen(false)}
-                className="text-gray-500 hover:text-gray-700"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            
-            <div className="flex justify-center mb-6">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => setRatingValue(star)}
-                  className="mx-1 focus:outline-none"
-                >
-                  <svg 
-                    className={`w-8 h-8 ${star <= ratingValue ? 'text-yellow-400' : 'text-gray-300'}`} 
-                    fill="currentColor" 
-                    viewBox="0 0 20 20"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                </button>
-              ))}
-            </div>
-            
-            <div className="mb-6">
-              <textarea
-                placeholder="أخبرنا كيف كانت تجربك لتساعد الناس في معرفة أداء الصنايعي"
-                className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={reviewText}
-                onChange={(e) => setReviewText(e.target.value)}
-              ></textarea>
-            </div>
-            
-            <button 
-              className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition disabled:opacity-50"
-              onClick={handleRatingSubmit}
-              disabled={ratingValue === 0}
-            >
-              إرسال
-            </button>
-          </div>
-        </div>
-      )}
 
-      {/* Fullscreen Image Viewer */}
-      {isFullscreen && (
-        <div 
-          className="fixed inset-0 z-50 bg-black bg-opacity-90 flex items-center justify-center"
-          onClick={closeFullscreen}
-        >
-          <button 
-            className="absolute top-4 right-4 text-white hover:text-gray-300"
-            onClick={closeFullscreen}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-          {selectedImage && (
-  <img 
-    src={selectedImage} 
-    alt="Fullscreen" 
-    className="max-w-full max-h-full object-contain"
-  />
-)}
+              {/* Ratings Tab */}
+              <div
+                id="reviews"
+                className="content"
+                style={{ display: activeTab === "reviews" ? "block" : "none" }}
+              >
+                {loading.ratings ? (
+                  <div className="flex justify-center py-10">
+                    <span className="loading loading-spinner loading-lg"></span>
+                  </div>
+                ) : error.ratings ? (
+                  <div className="alert alert-error">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="stroke-current shrink-0 h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                    <span>{error.ratings}</span>
+                  </div>
+                ) : ratingsData ? (
+                  <>
+                    <div className="rating-nmu0">
+                      <div className="m9">
+                        {ratingsData.ratingDistribution.map((dist) => (
+                          <div key={dist.stars} className="rating-nmu">
+                            <div>
+                              <span className="span-r">{dist.percentage}%</span>
+                            </div>
+                            <div className="r1">
+                              <div
+                                className={`r1-${dist.stars}`}
+                                style={{ width: `${dist.percentage}%` }}
+                              ></div>
+                            </div>
+                            <div>
+                              <span className="span-r">{dist.stars}</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div>
+                        <div className="img-r">
+                          {renderStars(ratingsData.averageRating)}
+                        </div>
+                        <div className="num">
+                          <span className="num-r">
+                            {ratingsData.averageRating.toFixed(1)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <button className="btn-r w-full" onClick={openModal}>
+                        قــــــيّـم الــصــنـايــعي الآن !
+                      </button>
+
+                      {isModalOpen && (
+                        <>
+                          <div
+                            className="modal-overlay-r"
+                            onClick={closeModal}
+                          ></div>
+                          <div className="modal-r">
+                            <div className="modal-r0">
+                              <div>
+                                <div>
+                                  <img
+                                    src={`https://sani3ywebapiv1.runasp.net${
+                                      craftsmanData?.profilePicture || ""
+                                    }`}
+                                    alt={craftsmanData?.fullName || ""}
+                                    width={50}
+                                    height={50}
+                                    className="rounded-full object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <span>{craftsmanData?.fullName}</span>
+                                </div>
+                              </div>
+                              <div>
+                                <div className="rating">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <span key={star}>
+                                      <img
+                                        src="/images/Star.svg"
+                                        alt={`${star} stars`}
+                                        width={20}
+                                        height={20}
+                                        onClick={() => {
+                                          // Handle rating selection
+                                        }}
+                                      />
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                              <div className="input-o">
+                                <textarea
+                                  className="input-o0"
+                                  placeholder="أخبرنا كيف كانت تجربك لتساعد الناس في معرفة اداء الصنايعي"
+                                />
+                              </div>
+                              <div className="btn-s">
+                                <button
+                                  className="btn-send"
+                                  onClick={openModal2}
+                                >
+                                  إرسال
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Reviews List */}
+                    {ratingsData.ratings.map((rating, index) => (
+                      <React.Fragment key={index}>
+                        <div className="rating-com">
+                          <div className="com-1">
+                            <div>
+                              <img
+                                src={`https://sani3ywebapiv1.runasp.net${rating.profilePicture}`}
+                                alt={rating.fullName}
+                                width={50}
+                                height={50}
+                                className="rounded-full object-cover"
+                              />
+                            </div>
+                            <div>
+                              <div>
+                                <span className="com-1-0">
+                                  {rating.fullName}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="com-1-1">
+                                  {formatDate(rating.dateOfRate)}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="com-2">
+                            <div>
+                              <span className="com-1-0">التقييم</span>
+                            </div>
+                            <div className="com-1-2">
+                              {renderStars(rating.ratingByStars)}
+                            </div>
+                          </div>
+                          <div>
+                            <p className="com-1-3">
+                              {rating.ratingDescription}
+                            </p>
+                          </div>
+                        </div>
+
+                        {index < ratingsData.ratings.length - 1 && (
+                          <div className="linex">
+                            <div></div>
+                          </div>
+                        )}
+                      </React.Fragment>
+                    ))}
+
+              
+                  </>
+                ) : (
+                  <div className="text-center py-10">
+                    <p>لا توجد تقييمات متاحة</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
   );
-};
+}
 
-export default page;
+export default Page;

@@ -53,17 +53,7 @@ const AISearch = () => {
     setIsVisible(true);
   };
 
-  const renderStars = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <span key={i} className={i <= rating ? 'star-filled' : 'star-empty'}>
-          {i <= rating ? '★' : '☆'}
-        </span>
-      );
-    }
-    return <div className="stars-container">{stars}</div>;
-  };
+
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -112,7 +102,19 @@ const AISearch = () => {
       setIsVisible(false);
     }
   };
-
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <img 
+          key={i}
+          src={i <= rating ? "/images/Starf.svg" : "/images/Star.svg"} 
+          alt={i <= rating ? "filled star" : "empty star"}
+        />
+      );
+    }
+    return stars;
+  };
   return (
     <div className='search-div-all' ref={searchContainerRef}>
       <div className="gradient-border">
@@ -199,7 +201,7 @@ const AISearch = () => {
                           </div>
                         </div>
                         <div className="more-det">
-                          <Link href={`/craftsman/${craftsman.id}`}>عرض التفاصيل</Link>
+                          <Link href={`/craftsman?id=${craftsman.id}`}>عرض التفاصيل</Link>
                         </div>
                       </div>
                     </div>

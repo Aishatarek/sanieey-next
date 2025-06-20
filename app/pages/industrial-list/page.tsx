@@ -256,7 +256,7 @@ const page = () => {
                       <span>الــتقــييم</span>
                     </div>
                     <div className="riting">
-                      {renderStars(craftsman.rating)}
+                      {renderStars(craftsman.averageRating)}
                     </div>
                   </div>
                   
