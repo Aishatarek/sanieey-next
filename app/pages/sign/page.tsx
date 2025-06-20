@@ -414,6 +414,14 @@ const page = () => {
                       />
                     </div>
                   </div>
+                  <div className="text-left mt-1">
+                  <Link 
+  href="/forget-password"
+  className="font-somar font-normal text-[20px] leading-[22px] tracking-[0px] text-justify "
+>
+  نسيت كلمة المرور؟
+</Link>
+                  </div>
 
                   <button className="btn-mes" onClick={handleSignIn}>
                     تسجيل الدخول{" "}
