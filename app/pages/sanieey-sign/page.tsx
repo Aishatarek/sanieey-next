@@ -64,7 +64,8 @@ const page = () => {
 
             if (response.ok) {
                 localStorage.setItem('authToken', result.accessToken);
-                localStorage.setItem('role', result.role);
+                localStorage.setItem('role', "Craftsman");
+                
                 Swal.fire({
                     title: 'تم إنشاء الحساب بنجاح!',
                     icon: 'success',

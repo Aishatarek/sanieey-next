@@ -90,7 +90,7 @@ const page = () => {
             // Clear local storage and state regardless of API response
             localStorage.removeItem("authToken");
             localStorage.removeItem("userData");
-    
+            localStorage.removeItem("role")
             // Optional: Redirect to home page or login page
             window.location.href = "/";
           } else {
@@ -98,6 +98,8 @@ const page = () => {
             // Even if API fails, clear local session
             localStorage.removeItem("authToken");
             localStorage.removeItem("userData");
+            localStorage.removeItem("role")
+
             window.location.href = "/";
           }
         } catch (error) {
@@ -105,6 +107,8 @@ const page = () => {
           // Ensure local session is cleared even if there's an error
           localStorage.removeItem("authToken");
           localStorage.removeItem("userData");
+          localStorage.removeItem("role")
+
           window.location.href = "/";
         }
       };

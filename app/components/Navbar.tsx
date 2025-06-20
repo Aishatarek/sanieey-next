@@ -80,6 +80,8 @@ function Navbar() {
         // Clear local storage and state regardless of API response
         localStorage.removeItem("authToken");
         localStorage.removeItem("userData");
+        localStorage.removeItem("role")
+
         setIsUserLogged(null);
         setUserData(null);
         setDropdownOpen(false);
@@ -91,6 +93,8 @@ function Navbar() {
         // Even if API fails, clear local session
         localStorage.removeItem("authToken");
         localStorage.removeItem("userData");
+        localStorage.removeItem("role")
+
         setIsUserLogged(null);
         setUserData(null);
         setDropdownOpen(false);
@@ -101,6 +105,8 @@ function Navbar() {
       // Ensure local session is cleared even if there's an error
       localStorage.removeItem("authToken");
       localStorage.removeItem("userData");
+      localStorage.removeItem("role")
+
       setIsUserLogged(null);
       setUserData(null);
       setDropdownOpen(false);
@@ -119,9 +125,11 @@ function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [dropdownOpen]);
+
   if (localStorage.getItem("role") == "Craftsman") {
     return null;
   }
+  
   return (
     <nav
       className={`${
