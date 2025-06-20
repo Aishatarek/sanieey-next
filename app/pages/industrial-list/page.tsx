@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
 interface Craftsman {
   id: number;
   name: string;
   profession: string;
   location: string;
-  rating: number;
+  averageRating: number;
   isTrusted: boolean;
   imageUrl: string;
 }
@@ -42,17 +43,36 @@ interface Filters {
   PageSize: number;
 }
 
-const page = () => {
+const CraftsmenPage = () => {
   const [craftsmen, setCraftsmen] = useState<Craftsman[]>([]);
   const [loading, setLoading] = useState(true);
+  const [apiLocations, setApiLocations] = useState<string[]>([]);
+  const searchParams = useSearchParams();
+  const professionParam = searchParams.get('profession');
+
   const [filters, setFilters] = useState<Filters>({
-    ProfessionId: '',
+    ProfessionId: professionParam || '',
     Location: '',
     MinRating: '',
     IsTrusted: '',
     PageNumber: 1,
     PageSize: 8
   });
+
+  // Fetch locations from API on component mount
+  useEffect(() => {
+    const fetchLocations = async () => {
+      try {
+        const response = await fetch('https://sani3ywebapiv1.runasp.net/api/AiCraftsman/locations');
+        const data = await response.json();
+        setApiLocations(data.locations || []);
+      } catch (error) {
+        console.error('Error fetching locations:', error);
+      }
+    };
+    
+    fetchLocations();
+  }, []);
 
   const professions: Profession[] = [
     { id: '', name: 'الـكــل' },
@@ -61,11 +81,13 @@ const page = () => {
     { id: '3', name: 'نجار' }
   ];
 
+  // Generate locations from API data
   const locations: Location[] = [
     { value: '', label: 'الـكــل' },
-    { value: '6 اكتوبر', label: 'مدينة 6 اكتوبر' },
-    { value: 'الجيزة', label: 'الجيزة' },
-    { value: 'القاهرة', label: 'القاهرة' }
+    ...apiLocations.map(loc => ({
+      value: loc,
+      label: loc
+    }))
   ];
 
   const ratings: RatingOption[] = [
@@ -273,4 +295,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default CraftsmenPage;
