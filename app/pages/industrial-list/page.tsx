@@ -242,8 +242,8 @@ const CraftsmenPage = () => {
               <div key={craftsman.id} className="frame-28">
                 <div className="menu-list-plus">
                   <div className="img-profile">
-                    <Image 
-                      src={craftsman.imageUrl || "/images/Ellipse 6.svg"} 
+                    <img 
+                      src={craftsman?.profileImagePath ? `https://sani3ywebapiv1.runasp.net${craftsman?.profileImagePath}` :"/images/Ellipse 6.svg"} 
                       alt={craftsman.name} 
                       width={80} 
                       height={80}
@@ -252,8 +252,8 @@ const CraftsmenPage = () => {
                   </div>
                   
                   <div className="profile-name">
-                    <div><span>{craftsman.name}</span></div>
-                    {craftsman.isTrusted && (
+                    <div><span>{craftsman.fullName}</span></div>
+                    {craftsman.identityVerified && (
                       <div>
                         <Image src="/images/verify.svg" alt="verified" width={16} height={16} />
                       </div>

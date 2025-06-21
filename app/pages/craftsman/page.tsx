@@ -433,12 +433,14 @@ function Page() {
                       <span>{craftsmanData.fullName}</span>
                     </div>
                     <div>
+                    {craftsmanData.isTrusted?
                       <img
                         src="/images/verify.svg"
                         alt="Verified"
                         width={20}
                         height={20}
                       />
+                      :null}
                     </div>
                   </div>
                   <div className="work">
@@ -708,12 +710,14 @@ function Page() {
                       <span>{craftsmanData.fullName}</span>
                     </div>
                     <div>
+                    {craftsmanData.isTrusted?
                       <img
                         src="/images/verify.svg"
                         alt="Verified"
                         width={20}
                         height={20}
                       />
+                      :null}
                     </div>
                   </div>
                   <div className="work">
