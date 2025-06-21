@@ -300,7 +300,7 @@ const page = () => {
                     <div className="menu-list-plus">
                       <div className="img-profile">
                         <img
-                          src="/images/Ellipse 6.svg"
+                          src={craftsman.profileImagePath ? `https://sani3ywebapiv1.runasp.net${craftsman.profileImagePath}` :"/images/Ellipse 6.svg"}
                           alt={craftsman.fullName}
                           className="w-16 h-16 rounded-full object-cover"
                         />
@@ -347,7 +347,7 @@ const page = () => {
                       </div>
                       <div className="more-det">
                         <Link
-                          href={`/craftsman/${craftsman.id}`}
+                         href={`/craftsman?id=${craftsman.id}`}
                           className="text-primary hover:underline"
                         >
                           عرض التفاصيل
