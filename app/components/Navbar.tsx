@@ -127,7 +127,33 @@ function Navbar() {
   }, [dropdownOpen]);
 
   if (localStorage.getItem("role") == "Craftsman") {
-    return null;
+    return (
+      <nav
+        className={`${
+          isScrolled
+            ? "bg-white backdrop-blur-lg fixed top-0 w-full z-50 shadow-md"
+            : "bg-transparent"
+        } transition-all ease-in-out duration-300`}
+      >
+        <div className="container mx-auto flex items-center justify-between p-4">
+          {/* Logo */}
+          <Link href="/">
+            <img src="/images/Frame 16.svg" alt="Logo" className="h-10" />
+          </Link>
+  
+          {/* Desktop Menu */}
+
+          {/* Buttons */}
+            <div className=" lg:flex items-center space-x-4">
+              <Notifications />
+           
+            </div>
+
+        </div>
+  
+  
+      </nav>
+    );
   }
   
   return (

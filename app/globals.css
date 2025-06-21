@@ -6550,3 +6550,13 @@ footer .footer-about {
   color: #0012ff !important;
 
 }
+
+
+@media (max-width: 768px) {
+  .info10-1{
+    display: unset;
+  }
+  .kl-2{
+    flex-wrap: wrap;
+  }
+}

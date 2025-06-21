@@ -147,6 +147,12 @@ const page = () => {
                       <span> الصنايعية المرشحين </span>
                     </Link>
                   </li>
+                  <li>
+                    <Link href="/user-dashboard/approved-recommend" >
+                      <img src="/images/Group 8.svg" alt="Recommendations" />
+                      <span> الصنايعية المقبولون </span>
+                    </Link>
+                  </li>
                 </ul>
               </div>
             </div>
