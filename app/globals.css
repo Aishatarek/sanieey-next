@@ -3960,6 +3960,7 @@ ul {
 
   .services {
     margin-top: 100px;
+    height: unset;
   }
 
   .frame-22 {

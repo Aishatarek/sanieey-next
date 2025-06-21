@@ -201,7 +201,7 @@ const page = () => {
                                                         <img 
                                                             id="featuredImg" 
                                                             className="featured-image" 
-                                                            src={order.malfunctionPictures[0]} 
+                                                            src={"https://sani3ywebapiv1.runasp.net"+order.malfunctionPictures[0]} 
                                                             alt="الصورة الرئيسية" 
                                                         />
                                                         <div className="image-description" id="imgDescription">
@@ -213,7 +213,7 @@ const page = () => {
                                                                 {order.malfunctionPictures.map((img, index) => (
                                                                     <img 
                                                                         key={index} 
-                                                                        src={img} 
+                                                                        src={"https://sani3ywebapiv1.runasp.net"+img} 
                                                                         alt={`صورة ${index + 1}`} 
                                                                     />
                                                                 ))}

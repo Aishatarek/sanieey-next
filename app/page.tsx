@@ -131,7 +131,7 @@ export default function Home() {
               <p className="text-wrapper-9">
                 ابحث بين أفضل الصنايعية في منطقتك، قيم خدماتهم، واختر الأنسب بمساعدة تقييمات موثوقة ومعلومات شاملة.
               </p>
-              <div className="flex gap-4">
+              <div className="flex gap-4 flex-wrap">
                 <Link href="/industrial-list">
                 <button className="frame-5">
                   <img className="img-2" src="/images/ArrowLeft.svg" alt="" />

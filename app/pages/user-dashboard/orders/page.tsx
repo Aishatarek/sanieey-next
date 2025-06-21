@@ -369,7 +369,7 @@ const OrdersPage = () => {
                         {/* حالة 1: UnderImplementation */}
                         {order.orderStatus === 1 && (
                           <div className='flex flex-wrap justify-around w-full mt-1.5'>
-                            <button 
+                            {/* <button 
                               className="btn btn-primary w-50 mt-0.5"
                               onClick={() => handleCancelOrder(order)}
                             >
@@ -380,6 +380,12 @@ const OrdersPage = () => {
                               onClick={() => router.push(`/user-dashboard/edit-order?code=${order.requestNumber}`)}
                                 >
                               تعديل الطلب
+                            </button> */}
+                            <button 
+                              className="btn btn-primary w-50 mt-0.5"
+                              onClick={() => handleCompleteOrder(order)}
+                            >
+                              إتــمــام الـــطـلـــب
                             </button>
                           </div>
                         )}
@@ -387,12 +393,12 @@ const OrdersPage = () => {
                         {/* حالة 2: Completed */}
                         {order.orderStatus === 2 && (
                           <div className='flex flex-wrap justify-around w-full mt-1.5'>
-                            <button 
+                            {/* <button 
                               className="btn btn-primary w-50 mt-0.5"
                               onClick={() => handleCompleteOrder(order)}
                             >
                               إتــمــام الـــطـلـــب
-                            </button>
+                            </button> */}
                             <button 
                               className="btn btn-primary w-50 mt-0.5"
                               onClick={() => handleRateOrder(order)}
