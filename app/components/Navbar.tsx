@@ -137,9 +137,7 @@ function Navbar() {
       >
         <div className="container mx-auto flex items-center justify-between p-4">
           {/* Logo */}
-          <Link href="/">
             <img src="/images/Frame 16.svg" alt="Logo" className="h-10" />
-          </Link>
   
           {/* Desktop Menu */}
 
