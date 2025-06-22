@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const Page = () => {
   const [userData, setUserData] = useState({
@@ -12,6 +13,11 @@ const Page = () => {
   });
   const [currentProfileImage, setCurrentProfileImage] = useState("");
   const [profileImage, setProfileImage] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [showPassword3, setShowPassword3] = useState(false);
+
+
   const [profileImagePath, setProfileImagePath] = useState(
     "/images/Ellipse 6.svg"
   );
@@ -26,6 +32,7 @@ const Page = () => {
     confirmPassword: "",
   });
   const [passwordLoading, setPasswordLoading] = useState(false);
+  
 
   useEffect(() => {
     fetchUserData();
@@ -237,47 +244,47 @@ const Page = () => {
   if (loading && !userData.firstName) {
     return <div className="p-4">جاري التحميل...</div>;
   }
-   const handleLogout = async () => {
-        try {
-          const token = localStorage.getItem("authToken");
-    
-          const response = await fetch(
-            "https://sani3ywebapiv1.runasp.net/api/UserAuth/logout",
-            {
-              method: "POST",
-              headers: {
-                accept: "*/*",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-    
-          if (response.ok) {
-            // Clear local storage and state regardless of API response
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userData");
-            localStorage.removeItem("role")
-            // Optional: Redirect to home page or login page
-            window.location.href = "/";
-          } else {
-            console.error("Logout failed:", response.status);
-            // Even if API fails, clear local session
-            localStorage.removeItem("authToken");
-            localStorage.removeItem("userData");
-            localStorage.removeItem("role")
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem("authToken");
 
-            window.location.href = "/";
-          }
-        } catch (error) {
-          console.error("Error during logout:", error);
-          // Ensure local session is cleared even if there's an error
-          localStorage.removeItem("authToken");
-          localStorage.removeItem("userData");
-          localStorage.removeItem("role")
-
-          window.location.href = "/";
+      const response = await fetch(
+        "https://sani3ywebapiv1.runasp.net/api/UserAuth/logout",
+        {
+          method: "POST",
+          headers: {
+            accept: "*/*",
+            Authorization: `Bearer ${token}`,
+          },
         }
-      };
+      );
+
+      if (response.ok) {
+        // Clear local storage and state regardless of API response
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        localStorage.removeItem("role");
+        // Optional: Redirect to home page or login page
+        window.location.href = "/";
+      } else {
+        console.error("Logout failed:", response.status);
+        // Even if API fails, clear local session
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userData");
+        localStorage.removeItem("role");
+
+        window.location.href = "/";
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+      // Ensure local session is cleared even if there's an error
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userData");
+      localStorage.removeItem("role");
+
+      window.location.href = "/";
+    }
+  };
   return (
     <>
       <div className="container m-auto mt-1.5">
@@ -579,13 +586,10 @@ const Page = () => {
                     </div>
                   </form>
                   <Link href="/sanieey-dashboard/verify">
-                  <button
-                            type="submit"
-                            className="btn btn-primary"
-                          >
-                          تحقق
-                          </button>
-                          </Link>
+                    <button type="submit" className="btn btn-primary">
+                      تحقق
+                    </button>
+                  </Link>
                 </div>
 
                 <input
@@ -605,7 +609,7 @@ const Page = () => {
                         <img src="/images/lock.svg" alt="" />
                         <input
                           className="name"
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           id="currentPassword"
                           name="currentPassword"
                           placeholder="كلمة المرور الحالية"
@@ -613,6 +617,14 @@ const Page = () => {
                           onChange={handlePasswordChange}
                           required
                         />
+
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="password-toggle"
+                        >
+                          {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
                       </div>
                     </div>
                     <div className="pers-input-div mt-5">
@@ -621,7 +633,7 @@ const Page = () => {
                         <img src="/images/lock.svg" alt="" />
                         <input
                           className="name"
-                          type="password"
+                          type={showPassword2 ? "text" : "password"}
                           id="newPassword"
                           name="newPassword"
                           placeholder="كلمة المرور الجديدة"
@@ -630,6 +642,13 @@ const Page = () => {
                           required
                           minLength={6}
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword2(!showPassword2)}
+                          className="password-toggle"
+                        >
+                          {showPassword2 ? <FaEyeSlash /> : <FaEye />}
+                        </button>
                       </div>
                     </div>
                     <div className="pers-input-div mt-5">
@@ -640,7 +659,7 @@ const Page = () => {
                         <img src="/images/lock.svg" alt="" />
                         <input
                           className="name"
-                          type="password"
+                          type={showPassword3 ? "text" : "password"}
                           id="confirmPassword"
                           name="confirmPassword"
                           placeholder="تأكيد كلمة المرور الجديدة"
@@ -648,6 +667,13 @@ const Page = () => {
                           onChange={handlePasswordChange}
                           required
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword3(!showPassword3)}
+                          className="password-toggle"
+                        >
+                          {showPassword3 ? <FaEyeSlash /> : <FaEye />}
+                        </button>
                       </div>
                     </div>
 

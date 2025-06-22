@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import Swal from 'sweetalert2'
+import { FaEye, FaEyeSlash } from 'react-icons/fa'
 
 interface UserData {
   firstName: string
@@ -37,6 +38,9 @@ const page = () => {
   const [loading, setLoading] = useState(true)
   const [editMode, setEditMode] = useState(false)
   const [errors, setErrors] = useState<FormErrors>({})
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [showPassword3, setShowPassword3] = useState(false);
 
   const [passwordData, setPasswordData] = useState<PasswordData>({
     currentPassword: '',
@@ -431,7 +435,7 @@ const page = () => {
                         <img src="/images/lock.svg" alt="" />
                         <input 
                           className="name" 
-                          type="password" 
+                          type={showPassword ? "text" : "password"}
                           id="currentPassword"
                           name="currentPassword"
                           placeholder="كلمة المرور الحالية" 
@@ -439,6 +443,14 @@ const page = () => {
                           onChange={handlePasswordChange}
                           required
                         />
+                                           
+                                                <button
+                                                  type="button"
+                                                  onClick={() => setShowPassword(!showPassword)}
+                                                  className="password-toggle"
+                                                >
+                                                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                                </button>
                       </div>
                     </div>
                     <div className="pers-input-div mt-5">
@@ -447,7 +459,8 @@ const page = () => {
                         <img src="/images/lock.svg" alt="" />
                         <input 
                           className="name" 
-                          type="password" 
+                          type={showPassword2 ? "text" : "password"}
+
                           id="newPassword"
                           name="newPassword"
                           placeholder="كلمة المرور الجديدة" 
@@ -456,6 +469,13 @@ const page = () => {
                           required
                           minLength={6}
                         />
+                                           <button
+                                                  type="button"
+                                                  onClick={() => setShowPassword2(!showPassword2)}
+                                                  className="password-toggle"
+                                                >
+                                                  {showPassword2 ? <FaEyeSlash /> : <FaEye />}
+                                                </button>
                       </div>
                     </div>
                     <div className="pers-input-div mt-5">
@@ -464,7 +484,7 @@ const page = () => {
                         <img src="/images/lock.svg" alt="" />
                         <input 
                           className="name" 
-                          type="password" 
+                          type={showPassword3 ? "text" : "password"}
                           id="confirmPassword"
                           name="confirmPassword"
                           placeholder="تأكيد كلمة المرور الجديدة" 
@@ -472,6 +492,13 @@ const page = () => {
                           onChange={handlePasswordChange}
                           required
                         />
+                            <button
+                                                  type="button"
+                                                  onClick={() => setShowPassword3(!showPassword3)}
+                                                  className="password-toggle"
+                                                >
+                                                  {showPassword3 ? <FaEyeSlash /> : <FaEye />}
+                                                </button>
                       </div>
                     </div>
 

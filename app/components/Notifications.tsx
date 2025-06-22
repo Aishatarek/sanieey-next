@@ -34,7 +34,7 @@ const Notifications = () => {
       const response = await fetch(
         `https://sani3ywebapiv1.runasp.net/api/Notification/${id}/read`,
         {
-          method: 'POST',
+          method: 'PATCH',
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -103,7 +103,7 @@ const Notifications = () => {
                   <div className="flex items-center">
                     <img src="/images/clock.svg" alt="" />
                     <p className="font-[Somar] font-normal text-[18px] leading-[22px] text-[#6C7278] ml-1">
-                      {new Date(notif.createdAt).toLocaleString()}
+                      {notif.createdAt}
                     </p>
                   </div>
                 </div>

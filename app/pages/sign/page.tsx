@@ -3,17 +3,12 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Swal from "sweetalert2";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const page = () => {
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const togglePasswordVisibility = () => {
-    setIsPasswordVisible(!isPasswordVisible);
-  };
-
-  const [isPasswordVisible2, setIsPasswordVisible2] = useState(false);
-  const togglePasswordVisibility2 = () => {
-    setIsPasswordVisible2(!isPasswordVisible2);
-  };
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [showPassword3, setShowPassword3] = useState(false);
 
   const [signUpData, setSignUpData] = useState({
     firstName: "",
@@ -280,7 +275,7 @@ const page = () => {
                         <img src="/images/lock.svg" alt="" />
                         <input
                           className="name"
-                          type="password"
+                          type={showPassword3 ? "text" : "password"}
                           name="password"
                           id="password"
                           placeholder="***********"
@@ -291,6 +286,13 @@ const page = () => {
                             })
                           }
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword3(!showPassword3)}
+                          className="password-toggle"
+                        >
+                          {showPassword3 ? <FaEyeSlash /> : <FaEye />}
+                        </button>
                       </div>
                     </div>
                     <div className="name-0 w-full md:w-6/12 sm:w-6/12 ">
@@ -301,7 +303,7 @@ const page = () => {
                         <img src="/images/lock.svg" alt="" />
                         <input
                           className="name"
-                          type="password"
+                          type={showPassword ? "text" : "password"}
                           id="confirmPassword"
                           placeholder="***********"
                           onChange={(e) =>
@@ -311,6 +313,13 @@ const page = () => {
                             })
                           }
                         />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="password-toggle"
+                        >
+                          {showPassword ? <FaEyeSlash /> : <FaEye />}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -401,9 +410,9 @@ const page = () => {
                       <img src="/images/lock.svg" alt="" />
                       <input
                         className="name"
-                        type="password"
                         name="password"
                         id="password"
+                        type={showPassword2 ? "text" : "password"}
                         placeholder="***********"
                         onChange={(e) =>
                           setSignInData({
@@ -412,6 +421,14 @@ const page = () => {
                           })
                         }
                       />
+
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword2(!showPassword2)}
+                        className="password-toggle"
+                      >
+                        {showPassword2 ? <FaEyeSlash /> : <FaEye />}
+                      </button>
                     </div>
                   </div>
                   <div className="text-left mt-1">

@@ -953,9 +953,9 @@ function Page() {
                     </div>
 
                     <div>
-                      <button className="btn-r w-full" onClick={openModal}>
+                      {/* <button className="btn-r w-full" onClick={openModal}>
                         قــــــيّـم الــصــنـايــعي الآن !
-                      </button>
+                      </button> */}
 
                       {isModalOpen && (
                         <>

@@ -2975,6 +2975,8 @@ label {
   padding: 0px 10px;
   justify-content: flex-end;
   align-items: baseline;
+position: relative;
+
 
   align-self: stretch;
 }
@@ -6559,4 +6561,70 @@ footer .footer-about {
   .kl-2{
     flex-wrap: wrap;
   }
+}
+.name-1 {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle {
+  position: absolute;
+  left: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  top: 20px;
+  
+}
+
+.password-toggle svg {
+  width: 20px;
+}
+.upload-container {
+  position: relative;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.upload-container:hover {
+  border-color: #aaa;
+}
+
+.selected-file {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.p-cc img {
+  width: 50px;
+  height: 50px;
+}
+
+.upload-text {
+  margin-top: 10px;
+  font-weight: bold;
+  color: #333;
+}
+
+.upload-info {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #777;
 }
